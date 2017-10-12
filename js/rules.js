@@ -1,6 +1,7 @@
-import getElementFromTemplate from "./getElement";
+import {getElementFromTemplate} from "./utils";
 import showScreen from "./showScreen";
 import gameOne from "./game-1";
+import greeting from "./greeting";
 
 const layout = `<header class="header">
     <div class="header__back">
@@ -41,9 +42,15 @@ const rulesElement = getElementFromTemplate(layout);
 const button = rulesElement.querySelector(`.rules__button`);
 button.disabled = true;
 const input = rulesElement.querySelector(`.rules__input`);
+const back = rulesElement.querySelector(`.back`);
+
+back.addEventListener(`click`, () => {
+  showScreen(greeting);
+});
+
 
 input.addEventListener(`change`, () => {
-  button.disabled = !input.value ? true : false;
+  button.disabled = !input.value;
 });
 
 button.addEventListener(`click`, () => {

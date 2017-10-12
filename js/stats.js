@@ -1,4 +1,6 @@
-import getElementFromTemplate from "./getElement";
+import {getElementFromTemplate} from "./utils";
+import showScreen from "./showScreen";
+import greeting from "./greeting";
 
 const layout = `<header class="header">
     <div class="header__back">
@@ -120,5 +122,10 @@ const layout = `<header class="header">
   </footer>`;
 
 const statsElement = getElementFromTemplate(layout);
+const back = statsElement.querySelector(`.back`);
+
+back.addEventListener(`click`, () => {
+  showScreen(greeting);
+});
 
 export default statsElement;

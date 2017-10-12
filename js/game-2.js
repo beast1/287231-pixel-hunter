@@ -1,6 +1,7 @@
-import getElementFromTemplate from "./getElement";
+import {getElementFromTemplate} from "./utils";
 import showScreen from "./showScreen";
 import gameThree from "./game-3";
+import greeting from "./greeting";
 
 const layout = `<header class="header">
     <div class="header__back">
@@ -59,6 +60,11 @@ const layout = `<header class="header">
 
 const gameTwoElement = getElementFromTemplate(layout);
 const form = gameTwoElement.querySelector(`.game__content`);
+const back = gameTwoElement.querySelector(`.back`);
+
+back.addEventListener(`click`, () => {
+  showScreen(greeting);
+});
 
 form.addEventListener(`change`, () => {
   const radios = form.querySelectorAll(`input[type="radio"]:checked`);
