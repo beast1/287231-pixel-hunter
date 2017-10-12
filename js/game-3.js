@@ -1,6 +1,7 @@
-import getElementFromTemplate from "./getElement";
+import {getElementFromTemplate} from "./utils";
 import showScreen from "./showScreen";
 import stats from "./stats";
+import greeting from "./greeting";
 
 const layout = `<header class="header">
     <div class="header__back">
@@ -57,11 +58,16 @@ const layout = `<header class="header">
 
 const gameThreeElement = getElementFromTemplate(layout);
 const form = gameThreeElement.querySelector(`.game__content`);
+const back = gameThreeElement.querySelector(`.back`);
+
+back.addEventListener(`click`, () => {
+  showScreen(greeting);
+});
 
 form.addEventListener(`click`, (evt) => {
-  if (evt.target.tagName === `DIV`) {
+  if (evt.target.classList.contains(`game__option`)) {
     showScreen(stats);
   }
-}, false);
+});
 
 export default gameThreeElement;

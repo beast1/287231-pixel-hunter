@@ -1,4 +1,4 @@
-import getElementFromTemplate from "./getElement";
+import {getElementFromTemplate} from "./utils";
 import showScreen from "./showScreen";
 import rules from "./rules";
 
