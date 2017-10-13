@@ -1,5 +1,4 @@
-import {getElementFromTemplate} from "./utils";
-import showScreen from "./showScreen";
+import {getElementFromTemplate, showScreen} from "./utils";
 import greeting from "./greeting";
 
 const layout = `<header class="header">

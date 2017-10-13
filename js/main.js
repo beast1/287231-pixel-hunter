@@ -1,4 +1,4 @@
-import showScreen from "./showScreen";
+import {showScreen} from "./utils";
 import intro from "./intro";
 
 window.addEventListener(`load`, () => {
