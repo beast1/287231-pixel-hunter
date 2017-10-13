@@ -12,8 +12,14 @@ const convertToPoints = (answer) => {
 
 export const countScore = (answers, lifes) => {
   const lifeWorth = 50;
+  const maxLifes = 3;
+
   if (answers.length < 10 || lifes === 0) {
     return -1;
+  }
+
+  if (answers.filter((it) => it === `wrong`).length !== (maxLifes - lifes)) {
+    throw new Error(`impossible input combination`);
   }
 
   let totalScore = lifes * lifeWorth;

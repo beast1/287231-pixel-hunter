@@ -25,8 +25,18 @@ describe(`Check the score count function`, () => {
 
   it(`should throw an error in case of wrong answer type`, () => {
     throws(() => {
-      countScore([`scheisse`, ...Array(9).fill(`correct`)]);
+      countScore([`scheisse`, ...Array(9).fill(`correct`)], 2);
     }, `wrong answer type`);
+  });
+
+  it(`should throw an error in case of impossible combination of inputs`, () => {
+    throws(() => {
+      countScore([...Array(9).fill(`correct`), `wrong`], 3);
+    }, `impossible input combination`);
+
+    throws(() => {
+      countScore(Array(10).fill(`fast`), 2);
+    }, `impossible input combination`);
   });
 });
 
