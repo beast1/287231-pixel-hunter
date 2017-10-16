@@ -51,7 +51,7 @@ export const getTimer = (value) => {
   return {
     value,
     tick() {
-      return value === 0 ? false : getTimer(value - 1);
+      return value === 0 ? `Time is out` : getTimer(value - 1);
     }
   };
 };

@@ -44,7 +44,7 @@ describe(`Check that timer ticks correctly`, () => {
   });
 
   it(`should return false once finished`, () => {
-    equal(getTimer(0).tick(), false);
+    equal(getTimer(0).tick(), `Time is out`);
   });
 
   it(`should throw an error in case of negative value`, () => {
