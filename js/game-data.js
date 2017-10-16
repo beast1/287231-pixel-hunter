@@ -1,38 +1,40 @@
-const convertToPoints = (answer) => {
-  const key = answer.toUpperCase();
-  const AnswerTypes = {
-    FAST: 150,
-    SLOW: 50,
-    CORRECT: 100,
-    WRONG: 0
-  };
+const LIFE_WORTH = 50;
+const MAX_LIFES = 3;
 
-  return !AnswerTypes.hasOwnProperty(key) ? -1 : AnswerTypes[key];
+const PointsForAnswers = {
+  FAST: 150,
+  SLOW: 50,
+  CORRECT: 100,
+  WRONG: 0
+};
+
+export const AnswerTypes = {
+  FAST: `fast`,
+  SLOW: `slow`,
+  CORRECT: `correct`,
+  WRONG: `wrong`
 };
 
 export const countScore = (answers, lifes) => {
-  const lifeWorth = 50;
-  const maxLifes = 3;
-
-  if (answers.length < 10 || lifes === 0) {
+  if (answers.length < 10 || lifes < 0) {
     return -1;
   }
 
-  if (answers.filter((it) => it === `wrong`).length !== (maxLifes - lifes)) {
+  if (answers.filter((it) => it === `wrong`).length !== (MAX_LIFES - lifes)) {
     throw new Error(`impossible input combination`);
   }
 
-  let totalScore = lifes * lifeWorth;
+  let totalScore = lifes * LIFE_WORTH;
 
-  answers.forEach((answer) => {
-    const points = convertToPoints(answer);
+  totalScore += answers.map((answer) => {
+    const points = PointsForAnswers[answer.toUpperCase()];
 
-    if (points === -1) {
+    if (typeof points !== `number`) {
       throw new Error(`wrong answer type`);
     }
 
-    totalScore += points;
-  });
+    return points;
+  }).reduce((a, b) => a + b);
 
   return totalScore;
 };
@@ -53,3 +55,5 @@ export const getTimer = (value) => {
     }
   };
 };
+
+
