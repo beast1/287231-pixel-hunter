@@ -1,5 +1,4 @@
-import {getElementFromTemplate} from "./utils";
-import showScreen from "./showScreen";
+import {getElementFromTemplate, showScreen} from "./utils";
 import rules from "./rules";
 
 const layout = `<div class="greeting central--blur">

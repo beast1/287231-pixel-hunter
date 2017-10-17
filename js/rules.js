@@ -1,5 +1,4 @@
-import {getElementFromTemplate} from "./utils";
-import showScreen from "./showScreen";
+import {getElementFromTemplate, showScreen} from "./utils";
 import gameOne from "./game-1";
 import greeting from "./greeting";
 

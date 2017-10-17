@@ -4,3 +4,10 @@ export const getElementFromTemplate = (layout) => {
 
   return div;
 };
+
+export const showScreen = (child) => {
+  const mainElement = document.querySelector(`.central`);
+
+  mainElement.innerHTML = ``;
+  mainElement.appendChild(child);
+};
