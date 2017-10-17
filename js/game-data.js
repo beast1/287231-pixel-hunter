@@ -1,12 +1,7 @@
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
-
-const PointsForAnswers = {
-  FAST: 150,
-  SLOW: 50,
-  CORRECT: 100,
-  WRONG: 0
-};
+const MAX_ANSWERS_LENGTH = 10;
+const TIMER_STOP = `Time is out`;
 
 export const AnswerTypes = {
   FAST: `fast`,
@@ -15,28 +10,32 @@ export const AnswerTypes = {
   WRONG: `wrong`
 };
 
+const PointsForAnswers = {
+  [AnswerTypes.FAST]: 150,
+  [AnswerTypes.SLOW]: 50,
+  [AnswerTypes.CORRECT]: 100,
+  [AnswerTypes.WRONG]: 0
+};
+
+
 export const countScore = (answers, lifes) => {
-  if (answers.length < 10 || lifes < 0) {
+  if (answers.length < MAX_ANSWERS_LENGTH || lifes < 0) {
     return -1;
   }
 
-  if (answers.filter((it) => it === `wrong`).length !== (MAX_LIFES - lifes)) {
+  if (answers.filter((it) => it === AnswerTypes.WRONG).length !== (MAX_LIFES - lifes)) {
     throw new Error(`impossible input combination`);
   }
 
-  let totalScore = lifes * LIFE_WORTH;
+  const initialValue = lifes * LIFE_WORTH;
 
-  totalScore += answers.map((answer) => {
-    const points = PointsForAnswers[answer.toUpperCase()];
-
-    if (typeof points !== `number`) {
+  return answers.reduce((sum, answer) => {
+    if (typeof PointsForAnswers[answer] !== `number`) {
       throw new Error(`wrong answer type`);
     }
 
-    return points;
-  }).reduce((a, b) => a + b);
-
-  return totalScore;
+    return sum + PointsForAnswers[answer];
+  }, initialValue);
 };
 
 export const getTimer = (value) => {
@@ -51,7 +50,7 @@ export const getTimer = (value) => {
   return {
     value,
     tick() {
-      return value === 0 ? `Time is out` : getTimer(value - 1);
+      return value === 0 ? TIMER_STOP : getTimer(value - 1);
     }
   };
 };
