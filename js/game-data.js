@@ -3,6 +3,16 @@ const MAX_LIFES = 3;
 const MAX_ANSWERS_LENGTH = 10;
 const TIMER_STOP = `Time is out`;
 
+export const initialState = {
+  level: 0,
+  lives: 3,
+  time: 30
+};
+
+export const game = {
+  state: initialState
+};
+
 export const AnswerTypes = {
   FAST: `fast`,
   SLOW: `slow`,
