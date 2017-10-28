@@ -9,8 +9,24 @@ export const initialState = {
   time: 30
 };
 
+const option = {
+  image: ``,
+  type: `correct`
+};
+
+const level = {
+  description: ``,
+  type: ``,
+  answers: new Set(option)
+};
+
+export const gameLevels = [
+  level
+];
+
 export const game = {
-  state: initialState
+  state: initialState,
+  levels: gameLevels
 };
 
 export const AnswerTypes = {
