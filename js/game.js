@@ -70,7 +70,6 @@ const getLayout = (gameData) => {
         }
 
         if (gameData.state.level === 9 || gameData.state.lives < 0) {
-          console.log(gameData);
           showScreen(getStatsElement(gameData));
         } else {
           game.state.level += 1;
