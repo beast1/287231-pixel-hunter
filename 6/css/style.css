@@ -221,6 +221,10 @@
   flex-wrap: nowrap;
   justify-content: space-between; }
 
+.game__content img {
+  width: 100%;
+  height: auto; }
+
 .game__option {
   position: relative;
   border: 10px solid transparent;

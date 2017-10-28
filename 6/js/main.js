@@ -52,115 +52,20 @@ const footer = `<footer class="footer">
     </div>
   </footer>`;
 
-const layout$6 = `${getHeader()}
-  <div class="result">
-    <h1>Победа!</h1>
-    <table class="result__table">
-      <tr>
-        <td class="result__number">1.</td>
-        <td colspan="2">
-          <ul class="stats">
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--correct"></li>
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--unknown"></li>
-          </ul>
-        </td>
-        <td class="result__points">×&nbsp;100</td>
-        <td class="result__total">900</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="result__extra">Бонус за скорость:</td>
-        <td class="result__extra">1&nbsp;<span class="stats__result stats__result--fast"></span></td>
-        <td class="result__points">×&nbsp;50</td>
-        <td class="result__total">50</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="result__extra">Бонус за жизни:</td>
-        <td class="result__extra">2&nbsp;<span class="stats__result stats__result--alive"></span></td>
-        <td class="result__points">×&nbsp;50</td>
-        <td class="result__total">100</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="result__extra">Штраф за медлительность:</td>
-        <td class="result__extra">2&nbsp;<span class="stats__result stats__result--slow"></span></td>
-        <td class="result__points">×&nbsp;50</td>
-        <td class="result__total">-100</td>
-      </tr>
-      <tr>
-        <td colspan="5" class="result__total  result__total--final">950</td>
-      </tr>
-    </table>
-    <table class="result__table">
-      <tr>
-        <td class="result__number">2.</td>
-        <td>
-          <ul class="stats">
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--correct"></li>
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--wrong"></li>
-          </ul>
-        </td>
-        <td class="result__total"></td>
-        <td class="result__total  result__total--final">fail</td>
-      </tr>
-    </table>
-    <table class="result__table">
-      <tr>
-        <td class="result__number">3.</td>
-        <td colspan="2">
-          <ul class="stats">
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--correct"></li>
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--unknown"></li>
-          </ul>
-        </td>
-        <td class="result__points">×&nbsp;100</td>
-        <td class="result__total">900</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td class="result__extra">Бонус за жизни:</td>
-        <td class="result__extra">2&nbsp;<span class="stats__result stats__result--alive"></span></td>
-        <td class="result__points">×&nbsp;50</td>
-        <td class="result__total">100</td>
-      </tr>
-      <tr>
-        <td colspan="5" class="result__total  result__total--final">950</td>
-      </tr>
-    </table>
-  </div>
-  ${footer}`;
+const LIFE_WORTH = 50;
+const MAX_LIFES = 3;
+const MAX_ANSWERS_LENGTH = 10;
+const AnswerTypes = {
+  FAST: `fast`,
+  SLOW: `slow`,
+  CORRECT: `correct`,
+  WRONG: `wrong`
+};
 
-const statsElement = getElementFromTemplate(layout$6);
-const back$4 = statsElement.querySelector(`.back`);
-
-back$4.addEventListener(`click`, () => {
-  showScreen(greetingElement);
-});
+const ImageTypes = {
+  PAINT: `paint`,
+  PHOTO: `photo`
+};
 
 const initialState = {
   level: 0,
@@ -168,160 +73,399 @@ const initialState = {
   time: 30
 };
 
-const layout$5 = `${getHeader(initialState)}
-  <div class="game">
-    <p class="game__task">Найдите рисунок среди изображений</p>
-    <form class="game__content  game__content--triple">
-      <div class="game__option">
-        <img src="http://placehold.it/304x455" alt="Option 1" width="304" height="455">
-      </div>
-      <div class="game__option  game__option--selected">
-        <img src="http://placehold.it/304x455" alt="Option 1" width="304" height="455">
-      </div>
-      <div class="game__option">
-        <img src="http://placehold.it/304x455" alt="Option 1" width="304" height="455">
-      </div>
-    </form>
-    <div class="stats">
-      <ul class="stats">
-        <li class="stats__result stats__result--wrong"></li>
-        <li class="stats__result stats__result--slow"></li>
-        <li class="stats__result stats__result--fast"></li>
-        <li class="stats__result stats__result--correct"></li>
-        <li class="stats__result stats__result--wrong"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--slow"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--fast"></li>
-        <li class="stats__result stats__result--unknown"></li>
-      </ul>
-    </div>
-  </div>
-  ${footer}`;
+const levels = [
+  {
+    description: `Найдите рисунок среди изображений`,
+    type: `TRIPLE`,
+    expect: ImageTypes.PAINT,
+    options: new Set([
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `https://i.imgur.com/DiHM5Zb.jpg`
+      },
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/D2F0370D6.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `http://www.fresher.ru/manager_content/images/fotorealistichnye-kartiny-italyanca-mikele-del-kampo/big/18.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://www.kartinki.me/images/201312/kartinki.me_16611.jpg`
+      }
+    ])
+  },
+  {
+    description: `Угадай, фото или рисунок?`,
+    type: `SINGLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://www.fresher.ru/manager_content/images/fotorealistichnye-kartiny-italyanca-mikele-del-kampo/big/18.jpg`
+      }
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k32.kn3.net/5C7060EC5.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/DKR1HtB.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадай, фото или рисунок?`,
+    type: `SINGLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      }
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+    ])
+  },
+  {
+    description: `Угадайте для каждого изображения фото или рисунок?`,
+    type: `DOUBLE`,
+    expect: ``,
+    options: new Set([
+      {
+        type: ImageTypes.PAINT,
+        image: `https://k42.kn3.net/CF42609C8.jpg`
+      },
+      {
+        type: ImageTypes.PHOTO,
+        image: `http://i.imgur.com/1KegWPz.jpg`
+      },
+    ])
+  },
+];
 
-const gameThreeElement = getElementFromTemplate(layout$5);
-const form$2 = gameThreeElement.querySelector(`.game__content`);
-const back$3 = gameThreeElement.querySelector(`.back`);
+const game = {
+  state: initialState,
+  history: [],
+  levels
+};
 
-back$3.addEventListener(`click`, () => {
-  showScreen(greetingElement);
-});
+const PointsForAnswers = {
+  [AnswerTypes.FAST]: 150,
+  [AnswerTypes.SLOW]: 50,
+  [AnswerTypes.CORRECT]: 100,
+  [AnswerTypes.WRONG]: 0
+};
 
-form$2.addEventListener(`click`, (evt) => {
-  if (evt.target.classList.contains(`game__option`)) {
-    showScreen(statsElement);
+const countScore = (answers, lifes) => {
+  if (answers.length < MAX_ANSWERS_LENGTH || lifes < 0) {
+    return -1;
   }
-});
 
-const layout$4 = `${getHeader(initialState)}
-  <div class="game">
-    <p class="game__task">Угадай, фото или рисунок?</p>
-    <form class="game__content  game__content--wide">
-      <div class="game__option">
-        <img src="http://placehold.it/705x455" alt="Option 1" width="705" height="455">
+  if (answers.filter((it) => it === AnswerTypes.WRONG).length !== (MAX_LIFES - lifes)) {
+    throw new Error(`impossible input combination`);
+  }
+
+  const initialValue = lifes * LIFE_WORTH;
+
+  return answers.reduce((sum, answer) => {
+    if (typeof PointsForAnswers[answer] !== `number`) {
+      throw new Error(`wrong answer type`);
+    }
+
+    return sum + PointsForAnswers[answer];
+  }, initialValue);
+};
+
+const MAX_LEVELS = 10;
+
+const getStats = (gameHistory) => {
+  return `
+      <ul class="stats">
+        ${gameHistory
+      .map((it) =>
+        `<li class="stats__result stats__result--${it}"></li>`)
+      .concat(new Array(MAX_LEVELS - gameHistory.length)
+          .fill(`<li class="stats__result stats__result--unknown"></li>`))
+      .join(``)}
+      </ul>`;
+};
+
+const LevelTypes = {
+  DOUBLE: `game__content`,
+  SINGLE: `game__content game__content--wide`,
+  TRIPLE: `game__content game__content--triple`
+};
+
+const getOptions = (options, levelType) => {
+  const optionsSet = Array.from(options);
+  return (levelType === `TRIPLE`
+    ? optionsSet.map((it) =>
+      `<div class="game__option">
+        <img src="${it.image}" alt="Option" width="304" height="455">
+      </div>`).join(``)
+    : optionsSet.map((it, i) =>
+      `<div class="game__option">
+        <img src="${it.image}" alt="Option">
         <label class="game__answer  game__answer--photo">
-          <input name="question1" type="radio" value="photo">
+          <input name="question${i + 1}" type="radio" value="photo">
           <span>Фото</span>
         </label>
         <label class="game__answer  game__answer--wide  game__answer--paint">
-          <input name="question1" type="radio" value="paint">
+          <input name="question${i + 1}" type="radio" value="paint">
           <span>Рисунок</span>
         </label>
-      </div>
-    </form>
-    <div class="stats">
-      <ul class="stats">
-        <li class="stats__result stats__result--wrong"></li>
-        <li class="stats__result stats__result--slow"></li>
-        <li class="stats__result stats__result--fast"></li>
-        <li class="stats__result stats__result--correct"></li>
-        <li class="stats__result stats__result--wrong"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--slow"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--fast"></li>
-        <li class="stats__result stats__result--unknown"></li>
-      </ul>
-    </div>
-  </div>
+      </div>`).join(``));
+};
+
+const getLevel = (levelData) => {
+  return `<p class="game__task">${levelData.description}</p>
+    <form class="${LevelTypes[levelData.type]}">
+      ${getOptions(levelData.options, levelData.type)}      
+    </form>`;
+};
+
+const Results = {
+  VICTORY: `Победа!`,
+  LOSE: `Поражение`
+};
+
+const EXTRA_POINTS = 50;
+const BASE_POINTS = 100;
+
+const getResult = (game$$1) => {
+  const RESULT = countScore(game$$1.history, game$$1.state.lives);
+  const STATS_BAR = getStats(game$$1.history);
+  const CORRECT_ANSWERS = game$$1.history.filter((it) =>
+    it !== AnswerTypes.WRONG).length;
+  const FAST_ANSWERS = game$$1.history.filter((it) =>
+    it === AnswerTypes.FAST).length;
+  const SLOW_ANSWERS = game$$1.history.filter((it) =>
+    it === AnswerTypes.SLOW).length;
+  const tableContent = [];
+
+  if (RESULT < 0) {
+    tableContent.push(`<tr>
+        <td class="result__number"></td>
+        <td>${STATS_BAR}</td>
+        <td class="result__total"></td>
+        <td class="result__total result__total--final">fail</td>
+      </tr>`);
+  } else {
+    tableContent.push(`<tr>
+        <td class="result__number"></td>
+        <td colspan="2">
+          ${STATS_BAR}
+        </td>
+        <td class="result__points">×&nbsp;${BASE_POINTS}</td>
+        <td class="result__total">${BASE_POINTS * CORRECT_ANSWERS}</td>
+        </tr>`);
+
+    if (FAST_ANSWERS > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Бонус за скорость:</td>
+        <td class="result__extra">${FAST_ANSWERS}&nbsp;<span class="stats__result stats__result--fast"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">${FAST_ANSWERS * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    if (game$$1.state.lives > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Бонус за жизни:</td>
+        <td class="result__extra">${game$$1.state.lives}&nbsp;<span class="stats__result stats__result--alive"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">${game$$1.state.lives * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    if (SLOW_ANSWERS > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Штраф за медлительность:</td>
+        <td class="result__extra">${SLOW_ANSWERS}&nbsp;<span class="stats__result stats__result--slow"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">-${SLOW_ANSWERS * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    tableContent.push(`<tr>
+        <td colspan="5" class="result__total  result__total--final">${RESULT}</td>
+      </tr>`);
+  }
+
+  return `<div class="result">
+    <h1>${RESULT < 0 ? Results.LOSE : Results.VICTORY}</h1>
+    <table class="result__table">${tableContent.join(``)}</table>
+  </div>`;
+};
+
+const getStatsElement = (gameData) => {
+  const layout = `${getHeader()}
+  ${getResult(gameData)}
   ${footer}`;
 
-const gameTwoElement = getElementFromTemplate(layout$4);
-const form$1 = gameTwoElement.querySelector(`.game__content`);
-const back$2 = gameTwoElement.querySelector(`.back`);
+  const stats = getElementFromTemplate(layout);
+  const back = stats.querySelector(`.back`);
 
-back$2.addEventListener(`click`, () => {
-  showScreen(greetingElement);
-});
+  back.addEventListener(`click`, () => {
+    showScreen(greetingElement);
+  });
 
-form$1.addEventListener(`change`, () => {
-  const radios = form$1.querySelectorAll(`input[type="radio"]:checked`);
+  return stats;
+};
 
-  if (radios.length > 0) {
-    showScreen(gameThreeElement);
-  }
-});
+const getLayout = (gameData) => {
+  const level = gameData.levels[gameData.state.level];
+  const options = Array.from(level.options);
+  const answers = options.map((it) =>
+    it.type);
 
-const layout$3 = `${getHeader(initialState)}
+  let element = getElementFromTemplate(`${getHeader(gameData.state)}
   <div class="game">
-    <p class="game__task">Угадайте для каждого изображения фото или рисунок?</p>
-    <form class="game__content">
-      <div class="game__option">
-        <img src="http://placehold.it/468x458" alt="Option 1" width="468" height="458">
-        <label class="game__answer game__answer--photo">
-          <input name="question1" type="radio" value="photo">
-          <span>Фото</span>
-        </label>
-        <label class="game__answer game__answer--paint">
-          <input name="question1" type="radio" value="paint">
-          <span>Рисунок</span>
-        </label>
-      </div>
-      <div class="game__option">
-        <img src="http://placehold.it/468x458" alt="Option 2" width="468" height="458">
-        <label class="game__answer  game__answer--photo">
-          <input name="question2" type="radio" value="photo">
-          <span>Фото</span>
-        </label>
-        <label class="game__answer  game__answer--paint">
-          <input name="question2" type="radio" value="paint">
-          <span>Рисунок</span>
-        </label>
-      </div>
-    </form>
+    ${getLevel(level)}
     <div class="stats">
-      <ul class="stats">
-        <li class="stats__result stats__result--wrong"></li>
-        <li class="stats__result stats__result--slow"></li>
-        <li class="stats__result stats__result--fast"></li>
-        <li class="stats__result stats__result--correct"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--unknown"></li>
-        <li class="stats__result stats__result--unknown"></li>
-      </ul>
+      ${getStats(gameData.history)}    
     </div>
   </div>
-  ${footer}`;
+  ${footer}`);
 
-const gameOneElement = getElementFromTemplate(layout$3);
-const form = gameOneElement.querySelector(`.game__content`);
-const fields = form.querySelectorAll(`.game__option`);
-const back$1 = gameOneElement.querySelector(`.back`);
+  const form = element.querySelector(`.game__content`);
+  const fields = form.querySelectorAll(`.game__option`);
+  const back = element.querySelector(`.back`);
 
-back$1.addEventListener(`click`, () => {
-  showScreen(greetingElement);
-});
+  back.addEventListener(`click`, () => {
+    showScreen(greetingElement);
+  });
 
-form.addEventListener(`change`, () => {
-  const radios = form.querySelectorAll(`input[type="radio"]:checked`);
+  if (level.type === `TRIPLE`) {
+    form.addEventListener(`click`, (evt) => {
+      if (evt.target.classList.contains(`game__option`)) {
+        if (level.expect === answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)]) {
+          gameData.history.push(AnswerTypes.CORRECT);
+        } else {
+          gameData.state.lives -= 1;
+          gameData.history.push(AnswerTypes.WRONG);
+        }
 
-  if (radios.length === fields.length) {
-    showScreen(gameTwoElement);
+        if (gameData.state.level === 10 || gameData.state.lives < 0) {
+          showScreen(getStatsElement(gameData));
+        } else {
+          game.state.level += 1;
+          element = getLayout(game);
+          showScreen(element);
+        }
+      }
+    });
+  } else {
+    form.addEventListener(`change`, () => {
+      const radios = form.querySelectorAll(`input[type="radio"]:checked`);
+
+      if (radios.length === fields.length) {
+        let answer = 0;
+
+        radios.forEach((it, i) => {
+          if (it.value === options[i].type) {
+            answer++;
+          }
+        });
+
+        if (answer === radios.length) {
+          gameData.history.push(AnswerTypes.CORRECT);
+        } else {
+          gameData.state.lives -= 1;
+          gameData.history.push(AnswerTypes.WRONG);
+        }
+
+        if (gameData.state.level === 9 || gameData.state.lives < 0) {
+          showScreen(getStatsElement(gameData));
+        } else {
+          game.state.level += 1;
+          element = getLayout(gameData);
+          showScreen(element);
+        }
+      }
+    });
   }
-});
+
+  return element;
+};
+
+let gameElement = getLayout(game);
+
+showScreen(gameElement);
 
 const layout$2 = `${getHeader()}
   <div class="rules">
@@ -358,7 +502,7 @@ input.addEventListener(`change`, () => {
 });
 
 button.addEventListener(`click`, () => {
-  showScreen(gameOneElement);
+  showScreen(gameElement);
 });
 
 const layout$1 = `<div class="greeting central--blur">
