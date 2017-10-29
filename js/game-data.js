@@ -1,5 +1,5 @@
 import {showScreen} from "./utils";
-import getStatsElement from "./game-stats";
+import getStatsElement from "./stats";
 
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
@@ -24,7 +24,7 @@ const ImageType = {
   PHOTO: `photo`
 };
 
-const initialState = () => {
+export const initialState = () => {
   return {
     level: 0,
     lives: 3,
@@ -32,7 +32,7 @@ const initialState = () => {
   };
 };
 
-const initialHistory = () => {
+export const initialHistory = () => {
   return [];
 };
 

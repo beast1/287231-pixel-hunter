@@ -1,9 +1,12 @@
 import {getElementFromTemplate, showScreen} from "./utils";
 import getElement from "./game";
-import {game} from "./game-data";
+import {game, initialState, initialHistory} from "./game-data";
 import greeting from "./greeting";
 import getHeader from "./header";
 import footer from "./footer";
+
+game.state = initialState();
+game.history = initialHistory();
 
 const layout = `${getHeader()}
   <div class="rules">

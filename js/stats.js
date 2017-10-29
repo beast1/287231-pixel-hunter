@@ -88,7 +88,7 @@ const getResult = (game) => {
   </div>`;
 };
 
-export const getStatsElement = (gameData) => {
+const getStatsElement = (gameData) => {
   const layout = `${getHeader()}
   ${getResult(gameData)}
   ${footer}`;
@@ -102,3 +102,5 @@ export const getStatsElement = (gameData) => {
 
   return stats;
 };
+
+export default getStatsElement;
