@@ -2,18 +2,17 @@ import {getElementFromTemplate, showScreen} from "./utils";
 import greeting from "./greeting";
 import getHeader from "./header";
 import footer from "./footer";
-import {AnswerTypes, game} from "./game-data";
+import {LevelType, levelChange} from "./game-data";
 import getStats from "./game-stats";
 import getLevel from "./level";
-import {getStatsElement} from "./stats";
 
-const getLayout = (gameData) => {
+const getElement = (gameData) => {
   const level = gameData.levels[gameData.state.level];
-  const options = Array.from(level.options);
+  const options = level.options;
   const answers = options.map((it) =>
     it.type);
 
-  let element = getElementFromTemplate(`${getHeader(gameData.state)}
+  const element = getElementFromTemplate(`${getHeader(gameData.state)}
   <div class="game">
     ${getLevel(level)}
     <div class="stats">
@@ -27,55 +26,28 @@ const getLayout = (gameData) => {
   const back = element.querySelector(`.back`);
 
   back.addEventListener(`click`, () => {
+    // if (confirm(`Вы уверены? Текущий прогресс будет потерян`)) {
     showScreen(greeting);
+    // }
   });
 
-  if (level.type === `TRIPLE`) {
+  if (level.type === LevelType.TRIPLE) {
     form.addEventListener(`click`, (evt) => {
       if (evt.target.classList.contains(`game__option`)) {
-        if (level.expect === answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)]) {
-          gameData.history.push(AnswerTypes.CORRECT);
-        } else {
-          gameData.state.lives -= 1;
-          gameData.history.push(AnswerTypes.WRONG);
-        }
+        const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
+        const condition = level.expect === currentAnswer;
 
-        if (gameData.state.level === 10 || gameData.state.lives < 0) {
-          showScreen(getStatsElement(gameData));
-        } else {
-          game.state.level += 1;
-          element = getLayout(game);
-          showScreen(element);
-        }
+        levelChange(gameData, condition, getElement);
       }
     });
   } else {
     form.addEventListener(`change`, () => {
-      const radios = form.querySelectorAll(`input[type="radio"]:checked`);
+      const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
+      const condition = radios.every((it, i) =>
+        it.value === options[i].type);
 
       if (radios.length === fields.length) {
-        let answer = 0;
-
-        radios.forEach((it, i) => {
-          if (it.value === options[i].type) {
-            answer++;
-          }
-        });
-
-        if (answer === radios.length) {
-          gameData.history.push(AnswerTypes.CORRECT);
-        } else {
-          gameData.state.lives -= 1;
-          gameData.history.push(AnswerTypes.WRONG);
-        }
-
-        if (gameData.state.level === 9 || gameData.state.lives < 0) {
-          showScreen(getStatsElement(gameData));
-        } else {
-          game.state.level += 1;
-          element = getLayout(gameData);
-          showScreen(element);
-        }
+        levelChange(gameData, condition, getElement);
       }
     });
   }
@@ -83,8 +55,4 @@ const getLayout = (gameData) => {
   return element;
 };
 
-let gameElement = getLayout(game);
-
-showScreen(gameElement);
-
-export default gameElement;
+export default getElement;

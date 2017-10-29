@@ -2,7 +2,7 @@ import {getElementFromTemplate, showScreen} from "./utils";
 import greeting from "./greeting";
 import getHeader from "./header";
 import footer from "./footer";
-import {countScore, AnswerTypes} from "./game-data";
+import {countScore, AnswerType} from "./game-data";
 import getStats from "./game-stats";
 
 const Results = {
@@ -16,12 +16,18 @@ const BASE_POINTS = 100;
 const getResult = (game) => {
   const RESULT = countScore(game.history, game.state.lives);
   const STATS_BAR = getStats(game.history);
-  const CORRECT_ANSWERS = game.history.filter((it) =>
-    it !== AnswerTypes.WRONG).length;
-  const FAST_ANSWERS = game.history.filter((it) =>
-    it === AnswerTypes.FAST).length;
-  const SLOW_ANSWERS = game.history.filter((it) =>
-    it === AnswerTypes.SLOW).length;
+
+  const countScores = (history) =>
+    history.reduce((obj, answer) => {
+      return Object.assign(obj, {[answer]: obj[answer] ? ++obj[answer] : 1});
+    }, {});
+
+  const answers = countScores(game.history);
+
+  const CORRECT_ANSWERS = answers[AnswerType.CORRECT];
+  const FAST_ANSWERS = answers[AnswerType.FAST];
+  const SLOW_ANSWERS = answers[AnswerType.SLOW];
+
   const tableContent = [];
 
   if (RESULT < 0) {

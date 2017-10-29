@@ -1,5 +1,6 @@
 import {getElementFromTemplate, showScreen} from "./utils";
-import gameElement from "./game";
+import getElement from "./game";
+import {game} from "./game-data";
 import greeting from "./greeting";
 import getHeader from "./header";
 import footer from "./footer";
@@ -39,7 +40,7 @@ input.addEventListener(`change`, () => {
 });
 
 button.addEventListener(`click`, () => {
-  showScreen(gameElement);
+  showScreen(getElement(game));
 });
 
 export default rulesElement;

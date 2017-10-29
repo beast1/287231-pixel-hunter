@@ -10,8 +10,8 @@ const getHeader = (data) => {
 
   if (typeof data === `undefined`) {
     return headerDefault;
-  } else {
-    return `${headerDefault}
+  }
+  return `${headerDefault}
     <h1 class="game__timer">${data.time}</h1>
     <div class="game__lives">
       ${new Array(3 - data.lives)
@@ -21,7 +21,7 @@ const getHeader = (data) => {
       .fill(`<img src="img/heart__full.svg" class="game__heart" alt="Life" width="32" height="32">`)
       .join(``)}
       </div>`;
-  }
+
 };
 
 export default getHeader;
