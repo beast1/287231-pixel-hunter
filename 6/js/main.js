@@ -64,6 +64,106 @@ const getStats = (gameHistory) => {
       </ul>`;
 };
 
+const Results = {
+  VICTORY: `Победа!`,
+  LOSE: `Поражение`
+};
+
+const EXTRA_POINTS = 50;
+const BASE_POINTS = 100;
+
+const getResult = (game$$1) => {
+  const RESULT = countScore(game$$1.history, game$$1.state.lives);
+  const STATS_BAR = getStats(game$$1.history);
+
+  const countScores = (history) =>
+    history.reduce((obj, answer) => {
+      return Object.assign(obj, {[answer]: obj[answer] ? ++obj[answer] : 1});
+    }, {});
+
+  const answers = countScores(game$$1.history);
+
+  const CORRECT_ANSWERS = answers[AnswerType.CORRECT];
+  const FAST_ANSWERS = answers[AnswerType.FAST];
+  const SLOW_ANSWERS = answers[AnswerType.SLOW];
+
+  const tableContent = [];
+
+  if (RESULT < 0) {
+    tableContent.push(`<tr>
+        <td class="result__number"></td>
+        <td>${STATS_BAR}</td>
+        <td class="result__total"></td>
+        <td class="result__total result__total--final">fail</td>
+      </tr>`);
+  } else {
+    tableContent.push(`<tr>
+        <td class="result__number"></td>
+        <td colspan="2">
+          ${STATS_BAR}
+        </td>
+        <td class="result__points">×&nbsp;${BASE_POINTS}</td>
+        <td class="result__total">${BASE_POINTS * CORRECT_ANSWERS}</td>
+        </tr>`);
+
+    if (FAST_ANSWERS > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Бонус за скорость:</td>
+        <td class="result__extra">${FAST_ANSWERS}&nbsp;<span class="stats__result stats__result--fast"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">${FAST_ANSWERS * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    if (game$$1.state.lives > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Бонус за жизни:</td>
+        <td class="result__extra">${game$$1.state.lives}&nbsp;<span class="stats__result stats__result--alive"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">${game$$1.state.lives * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    if (SLOW_ANSWERS > 0) {
+      tableContent.push(`<tr>
+        <td></td>
+        <td class="result__extra">Штраф за медлительность:</td>
+        <td class="result__extra">${SLOW_ANSWERS}&nbsp;<span class="stats__result stats__result--slow"></span></td>
+        <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
+        <td class="result__total">-${SLOW_ANSWERS * EXTRA_POINTS}</td>
+      </tr>`);
+    }
+
+    tableContent.push(`<tr>
+        <td colspan="5" class="result__total  result__total--final">${RESULT}</td>
+      </tr>`);
+  }
+
+  return `<div class="result">
+    <h1>${RESULT < 0 ? Results.LOSE : Results.VICTORY}</h1>
+    <table class="result__table">${tableContent.join(``)}</table>
+  </div>`;
+};
+
+const getStatsElement = (gameData) => {
+  const layout = `${getHeader()}
+  ${getResult(gameData)}
+  ${footer}`;
+
+  const stats = getElementFromTemplate(layout);
+  const back = stats.querySelector(`.back`);
+
+  back.addEventListener(`click`, () => {
+    showScreen(greetingElement);
+  });
+
+  return stats;
+};
+
+const LIFE_WORTH = 50;
+const MAX_LIFES = 3;
 const MAX_ANSWERS_LENGTH = 10;
 const AnswerType = {
   FAST: `fast`,
@@ -242,7 +342,32 @@ const game = {
   levels
 };
 
+const PointsForAnswers = {
+  [AnswerType.FAST]: 150,
+  [AnswerType.SLOW]: 50,
+  [AnswerType.CORRECT]: 100,
+  [AnswerType.WRONG]: 0
+};
 
+const countScore = (answers, lifes) => {
+  if (answers.length < MAX_ANSWERS_LENGTH || lifes < 0) {
+    return -1;
+  }
+
+  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lifes)) {
+    throw new Error(`impossible input combination`);
+  }
+
+  const initialValue = lifes * LIFE_WORTH;
+
+  return answers.reduce((sum, answer) => {
+    if (typeof PointsForAnswers[answer] !== `number`) {
+      throw new Error(`wrong answer type`);
+    }
+
+    return sum + PointsForAnswers[answer];
+  }, initialValue);
+};
 
 
 
@@ -255,7 +380,7 @@ const levelChange = (gameData, condition, cb) => {
   }
 
   if (gameData.state.level === 9 || gameData.state.lives < 0) {
-    showScreen(getStats(gameData));
+    showScreen(getStatsElement(gameData));
   } else {
     gameData.state.level += 1;
     showScreen(cb(gameData));
@@ -343,6 +468,9 @@ const getElement = (gameData) => {
 
   return element;
 };
+
+game.state = initialState();
+game.history = initialHistory();
 
 const layout$2 = `${getHeader()}
   <div class="rules">
