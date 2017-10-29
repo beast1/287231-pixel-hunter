@@ -5,6 +5,7 @@ import footer from "./footer";
 import {LevelType, levelChange} from "./game-data";
 import getStats from "./game-stats";
 import getLevel from "./level";
+import getStatsElement from "./stats";
 
 const getElement = (gameData) => {
   const level = gameData.levels[gameData.state.level];
@@ -37,7 +38,7 @@ const getElement = (gameData) => {
         const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
         const condition = level.expect === currentAnswer;
 
-        levelChange(gameData, condition, getElement);
+        levelChange(gameData, condition, getElement, getStatsElement);
       }
     });
   } else {
@@ -47,7 +48,7 @@ const getElement = (gameData) => {
         it.value === options[i].type);
 
       if (radios.length === fields.length) {
-        levelChange(gameData, condition, getElement);
+        levelChange(gameData, condition, getElement, getStatsElement);
       }
     });
   }

@@ -5,9 +5,6 @@ import greeting from "./greeting";
 import getHeader from "./header";
 import footer from "./footer";
 
-game.state = initialState();
-game.history = initialHistory();
-
 const layout = `${getHeader()}
   <div class="rules">
     <h1 class="rules__title">Правила</h1>
@@ -27,23 +24,29 @@ const layout = `${getHeader()}
   </div>
   ${footer}`;
 
-const rulesElement = getElementFromTemplate(layout);
-const button = rulesElement.querySelector(`.rules__button`);
-button.disabled = true;
-const input = rulesElement.querySelector(`.rules__input`);
-const back = rulesElement.querySelector(`.back`);
+const getRulesElement = () => {
+  game.state = initialState();
+  game.history = initialHistory();
 
-back.addEventListener(`click`, () => {
-  showScreen(greeting);
-});
+  const rulesElement = getElementFromTemplate(layout);
+  const button = rulesElement.querySelector(`.rules__button`);
+  button.disabled = true;
+  const input = rulesElement.querySelector(`.rules__input`);
+  const back = rulesElement.querySelector(`.back`);
 
+  back.addEventListener(`click`, () => {
+    showScreen(greeting);
+  });
 
-input.addEventListener(`change`, () => {
-  button.disabled = !input.value;
-});
+  input.addEventListener(`change`, () => {
+    button.disabled = !input.value;
+  });
 
-button.addEventListener(`click`, () => {
-  showScreen(getElement(game));
-});
+  button.addEventListener(`click`, () => {
+    showScreen(getElement(game));
+  });
 
-export default rulesElement;
+  return rulesElement;
+};
+
+export default getRulesElement;

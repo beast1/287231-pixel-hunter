@@ -1,5 +1,4 @@
 import {showScreen} from "./utils";
-import getStatsElement from "./stats";
 
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
@@ -227,7 +226,7 @@ export const getTimer = (value) => {
   };
 };
 
-export const levelChange = (gameData, condition, cb) => {
+export const levelChange = (gameData, condition, continueGame, gameOver) => {
   if (condition) {
     gameData.history.push(AnswerType.CORRECT);
   } else {
@@ -236,9 +235,9 @@ export const levelChange = (gameData, condition, cb) => {
   }
 
   if (gameData.state.level === 9 || gameData.state.lives < 0) {
-    showScreen(getStatsElement(gameData));
+    showScreen(gameOver(gameData));
   } else {
     gameData.state.level += 1;
-    showScreen(cb(gameData));
+    showScreen(continueGame(gameData));
   }
 };

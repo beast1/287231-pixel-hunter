@@ -1,5 +1,5 @@
 import {getElementFromTemplate, showScreen} from "./utils";
-import rules from "./rules";
+import getRulesElement from "./rules";
 import footer from "./footer";
 
 const layout = `<div class="greeting central--blur">
@@ -21,7 +21,7 @@ const greetingElement = getElementFromTemplate(layout);
 const rightArrow = greetingElement.querySelector(`.greeting__continue`);
 
 rightArrow.addEventListener(`click`, () => {
-  showScreen(rules);
+  showScreen(getRulesElement());
 });
 
 export default greetingElement;
