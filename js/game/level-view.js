@@ -33,19 +33,16 @@ export default class LevelView extends AbstractView {
   constructor(game) {
     super();
     this.game = game;
+    this.level = getLevel(this.game.state.level);
   }
 
   get template() {
-    this.level = getLevel(this.game.state.level);
-
     return `${getHeader(this.game.state)}
     ${drawLevel(this.level, this.game.history)}
     ${footer}`;
   }
 
   bind() {
-    this.timeElement = this.element.querySelector(`.game__timer`);
-
     const form = this.element.querySelector(`.game__content`);
     const fields = form.querySelectorAll(`.game__option`);
     const back = this.element.querySelector(`.back`);
@@ -59,16 +56,15 @@ export default class LevelView extends AbstractView {
 
       if (this.level.type === LevelType.TRIPLE) {
         if (evt.target.classList.contains(`game__option`)) {
-          const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
-          const isCorrect = this.level.expect === currentAnswer;
+          const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
+          answers[index] = this.level.expect;
 
-          this.onAnswer(isCorrect);
+          this.onAnswer(answers);
         }
       } else if (radios.length === fields.length) {
-        const isCorrect = radios.every((it, i) =>
-          it.value === this.level.options[i].type);
-
-        this.onAnswer(isCorrect);
+        const answer = radios.map((it) =>
+          it.value);
+        this.onAnswer(answer);
       }
     });
   }
@@ -80,6 +76,7 @@ export default class LevelView extends AbstractView {
   }
 
   updateTime(time) {
+    this.timeElement = this.element.querySelector(`.game__timer`);
     this.timeElement.textContent = time;
   }
 }

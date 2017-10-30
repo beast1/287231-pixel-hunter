@@ -1,6 +1,6 @@
 import {showScreen} from "../utils";
 import rules from "../rules/rules";
-import GreetingView from "./greeting.view";
+import GreetingView from "./greeting-view";
 
 const greeting = new GreetingView();
 

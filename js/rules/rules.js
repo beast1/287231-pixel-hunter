@@ -1,8 +1,8 @@
 import {showScreen} from "../utils";
 import gameElement from "../game/game";
-import {game, initialHistory, initialState} from "../data/game-data";
+import {getGame, getInitialHistory, getInitialState} from "../data/game-data";
 import greeting from "../greeting/greeting";
-import RulesView from "./rules.view";
+import RulesView from "./rules-view";
 
 const rules = new RulesView();
 
@@ -11,9 +11,9 @@ rules.onBack = () => {
 };
 
 rules.onStart = () => {
-  game.history = initialHistory();
-  game.state = initialState();
-  showScreen(gameElement(game));
+  const history = getInitialHistory();
+  const state = getInitialState();
+  showScreen(gameElement(getGame(state, history)));
 };
 
 export default () => rules;

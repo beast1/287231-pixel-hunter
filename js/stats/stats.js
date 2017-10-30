@@ -1,7 +1,7 @@
 import {showScreen} from "../utils";
 import {countScore} from "../data/game-data";
 import greeting from "../greeting/greeting";
-import StatsView from "./stats.view";
+import StatsView from "./stats-view";
 
 const getStats = (game) => {
   const score = countScore(game.history, game.state.lives);
