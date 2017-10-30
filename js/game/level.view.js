@@ -29,7 +29,7 @@ const drawLevel = (levelData, history) => {
     </form>${drawStats(history)}`;
 };
 
-export default class RulesView extends AbstractView {
+export default class LevelView extends AbstractView {
   constructor(game) {
     super();
     this.game = game;
@@ -44,38 +44,42 @@ export default class RulesView extends AbstractView {
   }
 
   bind() {
+    this.timeElement = this.element.querySelector(`.game__timer`);
+
     const form = this.element.querySelector(`.game__content`);
     const fields = form.querySelectorAll(`.game__option`);
     const back = this.element.querySelector(`.back`);
 
     back.addEventListener(`click`, this.onBack);
 
-    const answers = this.level.options.map((it) =>
-      it.type);
+    form.addEventListener(`click`, (evt) => {
+      const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
+      const answers = this.level.options.map((it) =>
+        it.type);
 
-    if (this.level.type === LevelType.TRIPLE) {
-      form.addEventListener(`click`, (evt) => {
+      if (this.level.type === LevelType.TRIPLE) {
         if (evt.target.classList.contains(`game__option`)) {
           const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
-          const condition = this.level.expect === currentAnswer;
+          const isCorrect = this.level.expect === currentAnswer;
 
-          levelChange(gameData, condition, getElement, getStatsElement);
+          this.onAnswer(isCorrect);
         }
-      });
-    } else {
-      form.addEventListener(`change`, () => {
-        const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-        const condition = radios.every((it, i) =>
-          it.value === options[i].type);
+      } else if (radios.length === fields.length) {
+        const isCorrect = radios.every((it, i) =>
+          it.value === this.level.options[i].type);
 
-        if (radios.length === fields.length) {
-          levelChange(gameData, condition, getElement, getStatsElement);
-        }
-      });
-    }
+        this.onAnswer(isCorrect);
+      }
+    });
   }
 
   onBack() {}
 
-  onChange() {}
+  onAnswer(answer) {
+    return answer;
+  }
+
+  updateTime(time) {
+    this.timeElement.textContent = time;
+  }
 }

@@ -1,9 +1,7 @@
-import {showScreen} from "../utils";
-
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
 export const MAX_ANSWERS_LENGTH = 10;
-const TIMER_STOP = `Time is out`;
+// const TIMER_STOP = `Time is out`;
 
 export const AnswerType = {
   FAST: `fast`,
@@ -16,6 +14,11 @@ export const LevelType = {
   SINGLE: `single`,
   DOUBLE: `double`,
   TRIPLE: `triple`
+};
+
+export const Result = {
+  VICTORY: `Победа!`,
+  LOSE: `Поражение`
 };
 
 export const LevelClass = {
@@ -215,37 +218,28 @@ export const countScore = (answers, lifes) => {
   }, initialValue);
 };
 
-export const getTimer = (value) => {
-  if (value < 0) {
-    throw new Error(`time remaining cannot be negative`);
-  }
+// export const getTimer = (value) => {
+//   if (value < 0) {
+//     throw new Error(`time remaining cannot be negative`);
+//   }
+//
+//   if (typeof value !== `number`) {
+//     throw new Error(`time is not numeric`);
+//   }
+//
+//   return {
+//     value,
+//     tick() {
+//       return value === 0 ? TIMER_STOP : getTimer(value - 1);
+//     }
+//   };
+// };
 
-  if (typeof value !== `number`) {
-    throw new Error(`time is not numeric`);
-  }
+export const tick = (gameData) => {
+  gameData = Object.assign({}, gameData);
+  gameData.state.time -= 1;
 
-  return {
-    value,
-    tick() {
-      return value === 0 ? TIMER_STOP : getTimer(value - 1);
-    }
-  };
-};
-
-export const levelChange = (gameData, condition, continueGame, gameOver) => {
-  if (condition) {
-    gameData.history.push(AnswerType.CORRECT);
-  } else {
-    gameData.state.lives -= 1;
-    gameData.history.push(AnswerType.WRONG);
-  }
-
-  if (gameData.state.level === 9 || gameData.state.lives < 0) {
-    showScreen(gameOver(gameData));
-  } else {
-    gameData.state.level += 1;
-    showScreen(continueGame(gameData));
-  }
+  return gameData;
 };
 
 export const getLevel = (level) => {

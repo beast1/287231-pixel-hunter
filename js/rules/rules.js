@@ -1,5 +1,6 @@
 import {showScreen} from "../utils";
 import gameElement from "../game/game";
+import {game, initialHistory, initialState} from "../data/game-data";
 import greeting from "../greeting/greeting";
 import RulesView from "./rules.view";
 
@@ -10,8 +11,9 @@ rules.onBack = () => {
 };
 
 rules.onStart = () => {
-  showScreen(gameElement());
+  game.history = initialHistory();
+  game.state = initialState();
+  showScreen(gameElement(game));
 };
-
 
 export default () => rules;

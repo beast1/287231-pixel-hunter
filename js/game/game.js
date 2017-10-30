@@ -1,59 +1,61 @@
-import {getElementFromTemplate, showScreen} from "../utils";
-import greeting from "../greeting/greeting";
-import getHeader from "./header/header";
-import footer from "./footer/footer";
-import {LevelType, levelChange} from "../data/game-data";
-import getStats from "./stats/game-stats";
-import getLevel from "./level/level";
-import getStatsElement from "../stats/stats";
+import getStats from "../stats/stats";
+import LevelView from "./level.view";
+import {AnswerType, tick} from "../data/game-data";
+import {showScreen} from "../utils";
 
-// const getElement = (gameData) => {
-//   const level = gameData.levels[gameData.state.level];
-//   const options = level.options;
-//   const answers = options.map((it) =>
-//     it.type);
-//
-//   const element = getElementFromTemplate(`${getHeader(gameData.state)}
-//   <div class="game">
-//     ${getLevel(level)}
-//     <div class="stats">
-//       ${getStats(gameData.history)}
-//     </div>
-//   </div>
-//   ${footer}`);
-//
-//   const form = element.querySelector(`.game__content`);
-//   const fields = form.querySelectorAll(`.game__option`);
-//   const back = element.querySelector(`.back`);
-//
-//   back.addEventListener(`click`, () => {
-//     // if (confirm(`Вы уверены? Текущий прогресс будет потерян`)) {
-//     showScreen(greeting);
-//     // }
-//   });
-//
-//   if (level.type === LevelType.TRIPLE) {
-//     form.addEventListener(`click`, (evt) => {
-//       if (evt.target.classList.contains(`game__option`)) {
-//         const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
-//         const condition = level.expect === currentAnswer;
-//
-//         levelChange(gameData, condition, getElement, getStatsElement);
-//       }
-//     });
-//   } else {
-//     form.addEventListener(`change`, () => {
-//       const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-//       const condition = radios.every((it, i) =>
-//         it.value === options[i].type);
-//
-//       if (radios.length === fields.length) {
-//         levelChange(gameData, condition, getElement, getStatsElement);
-//       }
-//     });
-//   }
-//
-//   return element;
-// };
+const FAST_TIME = 20;
+const SLOW_TIME = 10;
+const INITIAL_TIME = 30;
 
-// export default getElement;
+const changeScreen = (game) => {
+  if (game.state.level === 9 || game.state.lives < 0) {
+    showScreen(getStats(game));
+  } else {
+    game.state.level += 1;
+    game.state.time = INITIAL_TIME;
+    showScreen(changeLevel(game));
+  }
+};
+
+const changeLevel = (game) => {
+  const level = new LevelView(game);
+  let timer;
+
+  const startTimer = () => {
+    timer = setTimeout(() => {
+      game = tick(game);
+
+      if (game.state.time === 0) {
+        level.game.history.push(AnswerType.WRONG);
+        level.game.state.lives -= 1;
+        changeScreen(game);
+      }
+
+      level.updateTime(game.state.time);
+      startTimer();
+    }, 1000);
+  };
+  startTimer();
+
+  level.onAnswer = (answer) => {
+    clearTimeout(timer);
+    if (answer) {
+      if (game.state.time < SLOW_TIME) {
+        game.history.push(AnswerType.SLOW);
+      } else if (game.state.time > FAST_TIME) {
+        game.history.push(AnswerType.FAST);
+      } else {
+        game.history.push(AnswerType.CORRECT);
+      }
+    } else {
+      game.history.push(AnswerType.WRONG);
+      game.state.lives -= 1;
+    }
+
+    changeScreen(game);
+  };
+
+  return level;
+};
+
+export default (game) => changeLevel(game);
