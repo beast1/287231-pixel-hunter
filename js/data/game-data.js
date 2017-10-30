@@ -1,4 +1,4 @@
-import {showScreen} from "./utils";
+import {showScreen} from "../utils";
 
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
@@ -16,6 +16,12 @@ export const LevelType = {
   SINGLE: `single`,
   DOUBLE: `double`,
   TRIPLE: `triple`
+};
+
+export const LevelClass = {
+  [LevelType.DOUBLE]: `game__content`,
+  [LevelType.SINGLE]: `game__content game__content--wide`,
+  [LevelType.TRIPLE]: `game__content game__content--triple`
 };
 
 const ImageType = {
@@ -240,4 +246,8 @@ export const levelChange = (gameData, condition, continueGame, gameOver) => {
     gameData.state.level += 1;
     showScreen(continueGame(gameData));
   }
+};
+
+export const getLevel = (level) => {
+  return levels[level];
 };

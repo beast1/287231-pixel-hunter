@@ -1,4 +1,4 @@
-import {MAX_ANSWERS_LENGTH} from "./game-data";
+import {MAX_ANSWERS_LENGTH} from "../../data/game-data";
 
 const getStats = (gameHistory) => {
   return `

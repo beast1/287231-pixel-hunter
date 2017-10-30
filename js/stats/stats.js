@@ -1,9 +1,9 @@
-import {getElementFromTemplate, showScreen} from "./utils";
-import greeting from "./greeting";
-import getHeader from "./header";
-import footer from "./footer";
-import {countScore, AnswerType} from "./game-data";
-import getStats from "./game-stats";
+import {getElementFromTemplate, showScreen} from "../utils";
+import greeting from "../greeting/greeting";
+import getHeader from "../game/header/header";
+import footer from "../game/footer/footer";
+import {countScore, AnswerType} from "../data/game-data";
+import getStats from "../game/stats/game-stats";
 
 const Results = {
   VICTORY: `Победа!`,
