@@ -18,6 +18,10 @@ const showScreen = (view) => {
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
 const MAX_ANSWERS_LENGTH = 10;
+const FAST_TIME = 20;
+const SLOW_TIME = 10;
+const INITIAL_TIME = 30;
+
 // const TIMER_STOP = `Time is out`;
 
 const AnswerType = {
@@ -49,7 +53,7 @@ const ImageType = {
   PHOTO: `photo`
 };
 
-const initialState = () => {
+const getInitialState = () => {
   return {
     level: 0,
     lives: 3,
@@ -57,7 +61,7 @@ const initialState = () => {
   };
 };
 
-const initialHistory = () => {
+const getInitialHistory = () => {
   return [];
 };
 
@@ -202,10 +206,12 @@ const levels = [
   },
 ];
 
-const game = {
-  state: initialState(),
-  history: initialHistory(),
-  levels
+const getGame = (state, history) => {
+  return {
+    state,
+    history,
+    levels
+  };
 };
 
 const PointsForAnswers = {
@@ -215,16 +221,22 @@ const PointsForAnswers = {
   [AnswerType.WRONG]: 0
 };
 
-const countScore = (answers, lifes) => {
-  if (answers.length < MAX_ANSWERS_LENGTH || lifes < 0) {
+const setLives = (game, lives) => {
+  const newGame = getGame(game.state, game.history);
+  newGame.state.lives = lives;
+  return newGame;
+};
+
+const countScore = (answers, lives) => {
+  if (answers.length < MAX_ANSWERS_LENGTH || lives < 0) {
     return -1;
   }
 
-  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lifes)) {
+  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lives)) {
     throw new Error(`impossible input combination`);
   }
 
-  const initialValue = lifes * LIFE_WORTH;
+  const initialValue = lives * LIFE_WORTH;
 
   return answers.reduce((sum, answer) => {
     if (typeof PointsForAnswers[answer] !== `number`) {
@@ -252,11 +264,33 @@ const countScore = (answers, lifes) => {
 //   };
 // };
 
-const tick = (gameData) => {
-  gameData = Object.assign({}, gameData);
-  gameData.state.time -= 1;
+const tick = (game) => {
+  const newGame = getGame(game.state, game.history);
+  newGame.state.time -= 1;
 
-  return gameData;
+  return newGame;
+};
+
+const changeGameState = (game, condition) => {
+  let _game = getGame(game.state, game.history);
+
+  if (condition) {
+    if (_game.state.time < SLOW_TIME) {
+      _game.history.push(AnswerType.SLOW);
+    } else if (_game.state.time > FAST_TIME) {
+      _game.history.push(AnswerType.FAST);
+    } else {
+      _game.history.push(AnswerType.CORRECT);
+    }
+  } else {
+    _game.history.push(AnswerType.WRONG);
+    _game = setLives(_game, _game.state.lives - 1);
+  }
+
+  _game.state.level += 1;
+  _game.state.time = INITIAL_TIME;
+
+  return _game;
 };
 
 const getLevel = (level) => {
@@ -337,15 +371,15 @@ const getStats$2 = (gameHistory) => {
 const EXTRA_POINTS = 50;
 const BASE_POINTS = 100;
 
-const drawStats = (game$$1, score) => {
-  const STATS_BAR = getStats$2(game$$1.history);
+const drawStats = (game, score) => {
+  const STATS_BAR = getStats$2(game.history);
 
   const countScores = (history) =>
     history.reduce((obj, answer) => {
       return Object.assign(obj, {[answer]: obj[answer] ? ++obj[answer] : 1});
     }, {});
 
-  const answers = countScores(game$$1.history);
+  const answers = countScores(game.history);
 
   const CORRECT_ANSWERS = MAX_ANSWERS_LENGTH - answers[AnswerType.WRONG];
   const FAST_ANSWERS = answers[AnswerType.FAST];
@@ -380,13 +414,13 @@ const drawStats = (game$$1, score) => {
       </tr>`);
     }
 
-    if (game$$1.state.lives > 0) {
+    if (game.state.lives > 0) {
       tableContent.push(`<tr>
         <td></td>
         <td class="result__extra">Бонус за жизни:</td>
-        <td class="result__extra">${game$$1.state.lives}&nbsp;<span class="stats__result stats__result--alive"></span></td>
+        <td class="result__extra">${game.state.lives}&nbsp;<span class="stats__result stats__result--alive"></span></td>
         <td class="result__points">×&nbsp;${EXTRA_POINTS}</td>
-        <td class="result__total">${game$$1.state.lives * EXTRA_POINTS}</td>
+        <td class="result__total">${game.state.lives * EXTRA_POINTS}</td>
       </tr>`);
     }
 
@@ -412,9 +446,9 @@ const drawStats = (game$$1, score) => {
 };
 
 class StatsView extends AbstractView {
-  constructor(game$$1, score) {
+  constructor(game, score) {
     super();
-    this.game = game$$1;
+    this.game = game;
     this.score = score;
   }
 
@@ -433,9 +467,9 @@ class StatsView extends AbstractView {
   onBack() {}
 }
 
-const getStats = (game$$1) => {
-  const score = countScore(game$$1.history, game$$1.state.lives);
-  const stats = new StatsView(game$$1, score);
+const getStats = (game) => {
+  const score = countScore(game.history, game.state.lives);
+  const stats = new StatsView(game, score);
 
   stats.onBack = () => {
     showScreen(greeting$1());
@@ -444,7 +478,7 @@ const getStats = (game$$1) => {
   return stats;
 };
 
-var getStats$1 = (game$$1) => getStats(game$$1);
+var getStats$1 = (game) => getStats(game);
 
 const drawLevel = (levelData, history) => {
   return `<p class="game__task">${levelData.description}</p>
@@ -472,22 +506,19 @@ const drawLevel = (levelData, history) => {
 };
 
 class LevelView extends AbstractView {
-  constructor(game$$1) {
+  constructor(game) {
     super();
-    this.game = game$$1;
+    this.game = game;
+    this.level = getLevel(this.game.state.level);
   }
 
   get template() {
-    this.level = getLevel(this.game.state.level);
-
     return `${getHeader(this.game.state)}
     ${drawLevel(this.level, this.game.history)}
     ${footer}`;
   }
 
   bind() {
-    this.timeElement = this.element.querySelector(`.game__timer`);
-
     const form = this.element.querySelector(`.game__content`);
     const fields = form.querySelectorAll(`.game__option`);
     const back = this.element.querySelector(`.back`);
@@ -501,16 +532,15 @@ class LevelView extends AbstractView {
 
       if (this.level.type === LevelType.TRIPLE) {
         if (evt.target.classList.contains(`game__option`)) {
-          const currentAnswer = answers[Array.from(evt.target.parentNode.children).indexOf(evt.target)];
-          const isCorrect = this.level.expect === currentAnswer;
+          const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
+          answers[index] = this.level.expect;
 
-          this.onAnswer(isCorrect);
+          this.onAnswer(answers);
         }
       } else if (radios.length === fields.length) {
-        const isCorrect = radios.every((it, i) =>
-          it.value === this.level.options[i].type);
-
-        this.onAnswer(isCorrect);
+        const answer = radios.map((it) =>
+          it.value);
+        this.onAnswer(answer);
       }
     });
   }
@@ -522,66 +552,58 @@ class LevelView extends AbstractView {
   }
 
   updateTime(time) {
+    this.timeElement = this.element.querySelector(`.game__timer`);
     this.timeElement.textContent = time;
   }
 }
 
-const FAST_TIME = 20;
-const SLOW_TIME = 10;
-const INITIAL_TIME = 30;
-
-const changeScreen = (game$$1) => {
-  if (game$$1.state.level === 9 || game$$1.state.lives < 0) {
-    showScreen(getStats$1(game$$1));
+const toggleScreens = (game) => {
+  if (game.state.level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
+    showScreen(getStats$1(game));
   } else {
-    game$$1.state.level += 1;
-    game$$1.state.time = INITIAL_TIME;
-    showScreen(changeLevel(game$$1));
+    showScreen(changeLevel(game));
   }
 };
 
-const changeLevel = (game$$1) => {
-  const level = new LevelView(game$$1);
+const changeLevel = (game) => {
+  const currentLevel = new LevelView(game);
   let timer;
 
   const startTimer = () => {
     timer = setTimeout(() => {
-      game$$1 = tick(game$$1);
+      game = tick(game);
 
-      if (game$$1.state.time === 0) {
-        level.game.history.push(AnswerType.WRONG);
-        level.game.state.lives -= 1;
-        changeScreen(game$$1);
+      if (game.state.time === 0) {
+        const _game = changeGameState(false);
+
+        clearTimeout(timer);
+        toggleScreens(_game);
       }
 
-      level.updateTime(game$$1.state.time);
+      currentLevel.updateTime(game.state.time);
       startTimer();
     }, 1000);
   };
   startTimer();
 
-  level.onAnswer = (answer) => {
-    clearTimeout(timer);
-    if (answer) {
-      if (game$$1.state.time < SLOW_TIME) {
-        game$$1.history.push(AnswerType.SLOW);
-      } else if (game$$1.state.time > FAST_TIME) {
-        game$$1.history.push(AnswerType.FAST);
-      } else {
-        game$$1.history.push(AnswerType.CORRECT);
-      }
-    } else {
-      game$$1.history.push(AnswerType.WRONG);
-      game$$1.state.lives -= 1;
-    }
+  currentLevel.onAnswer = (answer) => {
 
-    changeScreen(game$$1);
+    clearTimeout(timer);
+
+    const isCorrect = answer.every((it, i) => it === currentLevel.level.options[i].type);
+    const _game = changeGameState(game, isCorrect);
+
+    toggleScreens(_game);
   };
 
-  return level;
+  currentLevel.onBack = () => {
+    showScreen(greeting$1());
+  };
+
+  return currentLevel;
 };
 
-var gameElement = (game$$1) => changeLevel(game$$1);
+var gameElement = (game) => changeLevel(game);
 
 class RulesView extends AbstractView {
   get template() {
@@ -632,9 +654,9 @@ rules.onBack = () => {
 };
 
 rules.onStart = () => {
-  game.history = initialHistory();
-  game.state = initialState();
-  showScreen(gameElement(game));
+  const history = getInitialHistory();
+  const state = getInitialState();
+  showScreen(gameElement(getGame(state, history)));
 };
 
 var rules$1 = () => rules;
