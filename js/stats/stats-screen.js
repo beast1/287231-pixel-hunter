@@ -4,8 +4,6 @@ import Application from "../application";
 import StatsView from "./stats-view";
 
 class StatsScreen {
-  constructor() {}
-
   init(game) {
     const score = countScore(game.history, game.state.lives);
 

@@ -5,9 +5,6 @@ import gameScreen from "./game/game-screen";
 import statsScreen from "./stats/stats-screen";
 import {getGame, getInitialHistory, getInitialState} from "./data/game-data";
 
-const initialState = getInitialState();
-const initialHistory = getInitialHistory();
-
 export default class Application {
   static showIntro() {
     introScreen.init();
@@ -21,11 +18,11 @@ export default class Application {
     rulesScreen.init();
   }
 
-  static startGame(game = getGame(initialState, initialHistory)) {
+  static startGame(game = getGame(getInitialState(), getInitialHistory())) {
     gameScreen.init(game);
   }
 
-  static showStats(game = getGame(initialState, initialHistory)) {
+  static showStats(game) {
     statsScreen.init(game);
   }
 }

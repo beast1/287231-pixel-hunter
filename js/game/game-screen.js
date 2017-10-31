@@ -1,6 +1,6 @@
 import LevelView from "./level-view";
 import Application from "../application";
-import {tick, changeGameState, MAX_ANSWERS_LENGTH} from "../data/game-data";
+import {tick, changeGameState, MAX_ANSWERS_LENGTH, getLevel} from "../data/game-data";
 import {showScreen} from "../utils";
 
 class GameScreen {
@@ -9,9 +9,9 @@ class GameScreen {
     this.view = new LevelView(game);
 
     this.view.onAnswer = (answer) => {
-      clearTimeout(this.timer);
+      this.stopTimer();
 
-      const isCorrect = answer.every((it, i) => it === this.view.level.options[i].type);
+      const isCorrect = answer.every((it, i) => it === getLevel(game.state.level).options[i].type);
       const newGame = changeGameState(game, isCorrect);
 
       this.toggleScreens(newGame);
