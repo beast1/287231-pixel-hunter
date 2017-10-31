@@ -597,9 +597,9 @@ class GameScreen {
     this.view = new LevelView(game);
 
     this.view.onAnswer = (answer) => {
-      clearTimeout(this.timer);
+      this.stopTimer();
 
-      const isCorrect = answer.every((it, i) => it === this.view.level.options[i].type);
+      const isCorrect = answer.every((it, i) => it === getLevel(game.state.level).options[i].type);
       const newGame = changeGameState(game, isCorrect);
 
       this.toggleScreens(newGame);
@@ -744,8 +744,6 @@ class StatsView extends AbstractView {
 }
 
 class StatsScreen {
-  constructor() {}
-
   init(game) {
     const score = countScore(game.history, game.state.lives);
 
@@ -761,9 +759,6 @@ class StatsScreen {
 
 var statsScreen = new StatsScreen();
 
-const initialState = getInitialState();
-const initialHistory = getInitialHistory();
-
 class Application {
   static showIntro() {
     introScreen.init();
@@ -777,11 +772,11 @@ class Application {
     rulesScreen.init();
   }
 
-  static startGame(game = getGame(initialState, initialHistory)) {
+  static startGame(game = getGame(getInitialState(), getInitialHistory())) {
     gameScreen.init(game);
   }
 
-  static showStats(game = getGame(initialState, initialHistory)) {
+  static showStats(game) {
     statsScreen.init(game);
   }
 }
