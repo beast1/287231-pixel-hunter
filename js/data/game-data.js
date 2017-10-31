@@ -249,31 +249,36 @@ export const countScore = (answers, lives) => {
 
 export const tick = (game) => {
   const newGame = getGame(game.state, game.history);
+
+  if (newGame.state.time === 0) {
+    return false;
+  }
+
   newGame.state.time -= 1;
 
   return newGame;
 };
 
 export const changeGameState = (game, condition) => {
-  let _game = getGame(game.state, game.history);
+  let newGame = getGame(game.state, game.history);
 
   if (condition) {
-    if (_game.state.time < SLOW_TIME) {
-      _game.history.push(AnswerType.SLOW);
-    } else if (_game.state.time > FAST_TIME) {
-      _game.history.push(AnswerType.FAST);
+    if (newGame.state.time < SLOW_TIME) {
+      newGame.history.push(AnswerType.SLOW);
+    } else if (newGame.state.time > FAST_TIME) {
+      newGame.history.push(AnswerType.FAST);
     } else {
-      _game.history.push(AnswerType.CORRECT);
+      newGame.history.push(AnswerType.CORRECT);
     }
   } else {
-    _game.history.push(AnswerType.WRONG);
-    _game = setLives(_game, _game.state.lives - 1);
+    newGame.history.push(AnswerType.WRONG);
+    newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  _game.state.level += 1;
-  _game.state.time = INITIAL_TIME;
+  newGame.state.level += 1;
+  newGame.state.time = INITIAL_TIME;
 
-  return _game;
+  return newGame;
 };
 
 export const getLevel = (level) => {

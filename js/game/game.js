@@ -18,32 +18,32 @@ const changeLevel = (game) => {
 
   const startTimer = () => {
     timer = setTimeout(() => {
-      game = tick(game);
+      const state = tick(game);
 
-      if (game.state.time === 0) {
-        const _game = changeGameState(false);
+      if (!state) {
+        const newGame = changeGameState(game, false);
 
         clearTimeout(timer);
-        toggleScreens(_game);
+        toggleScreens(newGame);
+      } else {
+        currentLevel.updateTime(state.state.time);
+        startTimer();
       }
-
-      currentLevel.updateTime(game.state.time);
-      startTimer();
     }, 1000);
   };
   startTimer();
 
   currentLevel.onAnswer = (answer) => {
-
     clearTimeout(timer);
 
     const isCorrect = answer.every((it, i) => it === currentLevel.level.options[i].type);
-    const _game = changeGameState(game, isCorrect);
+    const newGame = changeGameState(game, isCorrect);
 
-    toggleScreens(_game);
+    toggleScreens(newGame);
   };
 
   currentLevel.onBack = () => {
+    clearTimeout(timer);
     showScreen(greeting());
   };
 
