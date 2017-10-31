@@ -266,31 +266,36 @@ const countScore = (answers, lives) => {
 
 const tick = (game) => {
   const newGame = getGame(game.state, game.history);
+
+  if (newGame.state.time === 0) {
+    return false;
+  }
+
   newGame.state.time -= 1;
 
   return newGame;
 };
 
 const changeGameState = (game, condition) => {
-  let _game = getGame(game.state, game.history);
+  let newGame = getGame(game.state, game.history);
 
   if (condition) {
-    if (_game.state.time < SLOW_TIME) {
-      _game.history.push(AnswerType.SLOW);
-    } else if (_game.state.time > FAST_TIME) {
-      _game.history.push(AnswerType.FAST);
+    if (newGame.state.time < SLOW_TIME) {
+      newGame.history.push(AnswerType.SLOW);
+    } else if (newGame.state.time > FAST_TIME) {
+      newGame.history.push(AnswerType.FAST);
     } else {
-      _game.history.push(AnswerType.CORRECT);
+      newGame.history.push(AnswerType.CORRECT);
     }
   } else {
-    _game.history.push(AnswerType.WRONG);
-    _game = setLives(_game, _game.state.lives - 1);
+    newGame.history.push(AnswerType.WRONG);
+    newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  _game.state.level += 1;
-  _game.state.time = INITIAL_TIME;
+  newGame.state.level += 1;
+  newGame.state.time = INITIAL_TIME;
 
-  return _game;
+  return newGame;
 };
 
 const getLevel = (level) => {
@@ -571,32 +576,32 @@ const changeLevel = (game) => {
 
   const startTimer = () => {
     timer = setTimeout(() => {
-      game = tick(game);
+      const state = tick(game);
 
-      if (game.state.time === 0) {
-        const _game = changeGameState(false);
+      if (!state) {
+        const newGame = changeGameState(game, false);
 
         clearTimeout(timer);
-        toggleScreens(_game);
+        toggleScreens(newGame);
+      } else {
+        currentLevel.updateTime(state.state.time);
+        startTimer();
       }
-
-      currentLevel.updateTime(game.state.time);
-      startTimer();
     }, 1000);
   };
   startTimer();
 
   currentLevel.onAnswer = (answer) => {
-
     clearTimeout(timer);
 
     const isCorrect = answer.every((it, i) => it === currentLevel.level.options[i].type);
-    const _game = changeGameState(game, isCorrect);
+    const newGame = changeGameState(game, isCorrect);
 
-    toggleScreens(_game);
+    toggleScreens(newGame);
   };
 
   currentLevel.onBack = () => {
+    clearTimeout(timer);
     showScreen(greeting$1());
   };
 
