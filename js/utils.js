@@ -5,9 +5,9 @@ export const getElementFromTemplate = (layout) => {
   return div;
 };
 
-export const showScreen = (child) => {
-  const mainElement = document.querySelector(`.central`);
+const mainElement = document.querySelector(`.central`);
 
+export const showScreen = (view) => {
   mainElement.innerHTML = ``;
-  mainElement.appendChild(child);
+  mainElement.appendChild(view.element);
 };

@@ -1,20 +1,13 @@
-import {getElementFromTemplate, showScreen} from "./utils";
-import greeting from "./greeting";
-import getHeader from "./header";
-import footer from "./footer";
-import {countScore, AnswerType} from "./game-data";
-import getStats from "./game-stats";
-
-const Results = {
-  VICTORY: `Победа!`,
-  LOSE: `Поражение`
-};
+import AbstractView from "../view";
+import {Result, AnswerType, MAX_ANSWERS_LENGTH} from "../data/game-data";
+import footer from "../game/footer/footer";
+import getHeader from "../game/header/header";
+import getStats from "../game/stats/game-stats";
 
 const EXTRA_POINTS = 50;
 const BASE_POINTS = 100;
 
-const getResult = (game) => {
-  const RESULT = countScore(game.history, game.state.lives);
+const drawStats = (game, score) => {
   const STATS_BAR = getStats(game.history);
 
   const countScores = (history) =>
@@ -24,13 +17,13 @@ const getResult = (game) => {
 
   const answers = countScores(game.history);
 
-  const CORRECT_ANSWERS = answers[AnswerType.CORRECT];
+  const CORRECT_ANSWERS = MAX_ANSWERS_LENGTH - answers[AnswerType.WRONG];
   const FAST_ANSWERS = answers[AnswerType.FAST];
   const SLOW_ANSWERS = answers[AnswerType.SLOW];
 
   const tableContent = [];
 
-  if (RESULT < 0) {
+  if (score < 0) {
     tableContent.push(`<tr>
         <td class="result__number"></td>
         <td>${STATS_BAR}</td>
@@ -78,29 +71,34 @@ const getResult = (game) => {
     }
 
     tableContent.push(`<tr>
-        <td colspan="5" class="result__total  result__total--final">${RESULT}</td>
+        <td colspan="5" class="result__total  result__total--final">${score}</td>
       </tr>`);
   }
 
   return `<div class="result">
-    <h1>${RESULT < 0 ? Results.LOSE : Results.VICTORY}</h1>
+    <h1>${score < 0 ? Result.LOSE : Result.VICTORY}</h1>
     <table class="result__table">${tableContent.join(``)}</table>
   </div>`;
 };
 
-const getStatsElement = (gameData) => {
-  const layout = `${getHeader()}
-  ${getResult(gameData)}
-  ${footer}`;
+export default class StatsView extends AbstractView {
+  constructor(game, score) {
+    super();
+    this.game = game;
+    this.score = score;
+  }
 
-  const stats = getElementFromTemplate(layout);
-  const back = stats.querySelector(`.back`);
+  get template() {
+    return `${getHeader()}
+    ${drawStats(this.game, this.score)}
+    ${footer}`;
+  }
 
-  back.addEventListener(`click`, () => {
-    showScreen(greeting);
-  });
+  bind() {
+    const back = this.element.querySelector(`.back`);
 
-  return stats;
-};
+    back.addEventListener(`click`, this.onBack);
+  }
 
-export default getStatsElement;
+  onBack() {}
+}

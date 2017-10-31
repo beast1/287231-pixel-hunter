@@ -1,5 +1,5 @@
 import assert from 'assert';
-import {countScore, getTimer, AnswerType} from "./game-data";
+import {countScore, AnswerType} from "./game-data";
 
 const {equal, throws} = assert;
 
@@ -38,24 +38,24 @@ describe(`Check the score count function`, () => {
   });
 });
 
-describe(`Check that timer ticks correctly`, () => {
-  it(`should decrease by one per tick`, () => {
-    equal(getTimer(3).tick().value, 2);
-  });
-
-  it(`should return false once finished`, () => {
-    equal(getTimer(0).tick(), `Time is out`);
-  });
-
-  it(`should throw an error in case of negative value`, () => {
-    throws(() => {
-      getTimer(-1);
-    }, `time remaining cannot be negative`);
-  });
-
-  it(`should throw an error in case of non-numeric value`, () => {
-    throws(() => {
-      getTimer(`sheep`);
-    }, `time is not numeric`);
-  });
-});
+// describe(`Check that timer ticks correctly`, () => {
+//   it(`should decrease by one per tick`, () => {
+//     equal(getTimer(3).tick().value, 2);
+//   });
+//
+//   it(`should return false once finished`, () => {
+//     equal(getTimer(0).tick(), `Time is out`);
+//   });
+//
+//   it(`should throw an error in case of negative value`, () => {
+//     throws(() => {
+//       getTimer(-1);
+//     }, `time remaining cannot be negative`);
+//   });
+//
+//   it(`should throw an error in case of non-numeric value`, () => {
+//     throws(() => {
+//       getTimer(`sheep`);
+//     }, `time is not numeric`);
+//   });
+// });

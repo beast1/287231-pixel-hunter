@@ -1,9 +1,11 @@
-import {showScreen} from "./utils";
-
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
 export const MAX_ANSWERS_LENGTH = 10;
-const TIMER_STOP = `Time is out`;
+const FAST_TIME = 20;
+const SLOW_TIME = 10;
+const INITIAL_TIME = 30;
+
+// const TIMER_STOP = `Time is out`;
 
 export const AnswerType = {
   FAST: `fast`,
@@ -18,12 +20,23 @@ export const LevelType = {
   TRIPLE: `triple`
 };
 
+export const Result = {
+  VICTORY: `Победа!`,
+  LOSE: `Поражение`
+};
+
+export const LevelClass = {
+  [LevelType.DOUBLE]: `game__content`,
+  [LevelType.SINGLE]: `game__content game__content--wide`,
+  [LevelType.TRIPLE]: `game__content game__content--triple`
+};
+
 const ImageType = {
   PAINT: `paint`,
   PHOTO: `photo`
 };
 
-export const initialState = () => {
+export const getInitialState = () => {
   return {
     level: 0,
     lives: 3,
@@ -31,7 +44,7 @@ export const initialState = () => {
   };
 };
 
-export const initialHistory = () => {
+export const getInitialHistory = () => {
   return [];
 };
 
@@ -176,10 +189,12 @@ const levels = [
   },
 ];
 
-export const game = {
-  state: initialState(),
-  history: initialHistory(),
-  levels
+export const getGame = (state, history) => {
+  return {
+    state,
+    history,
+    levels
+  };
 };
 
 const PointsForAnswers = {
@@ -189,16 +204,22 @@ const PointsForAnswers = {
   [AnswerType.WRONG]: 0
 };
 
-export const countScore = (answers, lifes) => {
-  if (answers.length < MAX_ANSWERS_LENGTH || lifes < 0) {
+const setLives = (game, lives) => {
+  const newGame = getGame(game.state, game.history);
+  newGame.state.lives = lives;
+  return newGame;
+};
+
+export const countScore = (answers, lives) => {
+  if (answers.length < MAX_ANSWERS_LENGTH || lives < 0) {
     return -1;
   }
 
-  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lifes)) {
+  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lives)) {
     throw new Error(`impossible input combination`);
   }
 
-  const initialValue = lifes * LIFE_WORTH;
+  const initialValue = lives * LIFE_WORTH;
 
   return answers.reduce((sum, answer) => {
     if (typeof PointsForAnswers[answer] !== `number`) {
@@ -209,35 +230,57 @@ export const countScore = (answers, lifes) => {
   }, initialValue);
 };
 
-export const getTimer = (value) => {
-  if (value < 0) {
-    throw new Error(`time remaining cannot be negative`);
+// export const getTimer = (value) => {
+//   if (value < 0) {
+//     throw new Error(`time remaining cannot be negative`);
+//   }
+//
+//   if (typeof value !== `number`) {
+//     throw new Error(`time is not numeric`);
+//   }
+//
+//   return {
+//     value,
+//     tick() {
+//       return value === 0 ? TIMER_STOP : getTimer(value - 1);
+//     }
+//   };
+// };
+
+export const tick = (game) => {
+  const newGame = getGame(game.state, game.history);
+
+  if (newGame.state.time === 0) {
+    return false;
   }
 
-  if (typeof value !== `number`) {
-    throw new Error(`time is not numeric`);
-  }
+  newGame.state.time -= 1;
 
-  return {
-    value,
-    tick() {
-      return value === 0 ? TIMER_STOP : getTimer(value - 1);
-    }
-  };
+  return newGame;
 };
 
-export const levelChange = (gameData, condition, continueGame, gameOver) => {
+export const changeGameState = (game, condition) => {
+  let newGame = getGame(game.state, game.history);
+
   if (condition) {
-    gameData.history.push(AnswerType.CORRECT);
+    if (newGame.state.time < SLOW_TIME) {
+      newGame.history.push(AnswerType.SLOW);
+    } else if (newGame.state.time > FAST_TIME) {
+      newGame.history.push(AnswerType.FAST);
+    } else {
+      newGame.history.push(AnswerType.CORRECT);
+    }
   } else {
-    gameData.state.lives -= 1;
-    gameData.history.push(AnswerType.WRONG);
+    newGame.history.push(AnswerType.WRONG);
+    newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  if (gameData.state.level === 9 || gameData.state.lives < 0) {
-    showScreen(gameOver(gameData));
-  } else {
-    gameData.state.level += 1;
-    showScreen(continueGame(gameData));
-  }
+  newGame.state.level += 1;
+  newGame.state.time = INITIAL_TIME;
+
+  return newGame;
+};
+
+export const getLevel = (level) => {
+  return levels[level];
 };
