@@ -17,7 +17,7 @@ const drawStats = (game, score) => {
 
   const answers = countScores(game.history);
 
-  const CORRECT_ANSWERS = MAX_ANSWERS_LENGTH - answers[AnswerType.WRONG];
+  const CORRECT_ANSWERS = MAX_ANSWERS_LENGTH - (answers[AnswerType.WRONG] || 0);
   const FAST_ANSWERS = answers[AnswerType.FAST];
   const SLOW_ANSWERS = answers[AnswerType.SLOW];
 

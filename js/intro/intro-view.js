@@ -17,6 +17,5 @@ export default class IntroView extends AbstractView {
     asterisk.addEventListener(`click`, this.onClick);
   }
 
-  onClick() {
-  }
+  onClick() {}
 }
