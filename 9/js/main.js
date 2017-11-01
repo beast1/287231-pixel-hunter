@@ -803,7 +803,6 @@ class Application {
     const controller = Route[id];
 
     if (controller) {
-      console.log(data);
       if (!data) {
         controller.init();
       } else {
@@ -829,15 +828,13 @@ class Application {
   }
 
   static showStats(game) {
-    location.hash = `${ControllerId.GAME}?${saveState(game)}`;
+    location.hash = `${ControllerId.STATS}?${saveState(game)}`;
   }
 }
 
 Application.init();
 
-window.addEventListener(`load`, () => {
-  Application.showIntro();
-});
+Application.showIntro();
 
 }());
 
