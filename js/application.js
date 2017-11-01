@@ -50,7 +50,6 @@ export default class Application {
     const controller = Route[id];
 
     if (controller) {
-      console.log(data);
       if (!data) {
         controller.init();
       } else {
@@ -76,7 +75,7 @@ export default class Application {
   }
 
   static showStats(game) {
-    location.hash = `${ControllerId.GAME}?${saveState(game)}`;
+    location.hash = `${ControllerId.STATS}?${saveState(game)}`;
   }
 }
 
