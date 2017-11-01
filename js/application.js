@@ -27,6 +27,11 @@ const saveState = (state) => {
 
 const loadState = (dataString) => {
   try {
+    const data = JSON.parse(dataString);
+    if (!data.hasOwnProperty(`state`) || !data.hasOwnProperty(`history`)) {
+      return getGame(getInitialState(), getInitialHistory());
+    }
+
     return JSON.parse(dataString);
   } catch (e) {
     return getGame(getInitialState(), getInitialHistory());
