@@ -15,7 +15,7 @@ const ControllerId = {
 
 const Route = {
   [ControllerId.INTRO]: introScreen,
-  [ControllerId.GREETING]: introScreen,
+  [ControllerId.GREETING]: greetingScreen,
   [ControllerId.RULES]: rulesScreen,
   [ControllerId.GAME]: gameScreen,
   [ControllerId.STATS]: statsScreen
@@ -38,7 +38,7 @@ export default class Application {
     const hashChangeHandler = () => {
       const hashValue = location.hash.replace(`#`, ``);
       const [id, data] = hashValue.split(`?`);
-      console.log(id, data);
+
       this.changeHash(id, data);
     };
 
@@ -48,9 +48,10 @@ export default class Application {
 
   static changeHash(id, data) {
     const controller = Route[id];
-    console.log(controller);
+
     if (controller) {
-      if (typeof data === `undefined`) {
+      console.log(data);
+      if (!data) {
         controller.init();
       } else {
         controller.init(loadState(data));
