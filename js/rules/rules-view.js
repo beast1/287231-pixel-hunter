@@ -36,7 +36,10 @@ export default class RulesView extends AbstractView {
       button.disabled = !input.value;
     });
 
-    button.addEventListener(`click`, this.onStart);
+    button.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.onStart();
+    });
   }
 
   onBack() {}

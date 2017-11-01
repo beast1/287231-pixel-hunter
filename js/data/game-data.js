@@ -193,7 +193,6 @@ export const getGame = (state, history) => {
   return {
     state,
     history,
-    levels
   };
 };
 
