@@ -78,5 +78,3 @@ export default class Application {
     location.hash = `${ControllerId.STATS}?${saveState(game)}`;
   }
 }
-
-Application.init();
