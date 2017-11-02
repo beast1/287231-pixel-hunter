@@ -13,14 +13,6 @@ const ControllerId = {
   STATS: `stats`
 };
 
-const Route = {
-  [ControllerId.INTRO]: introScreen,
-  [ControllerId.GREETING]: greetingScreen,
-  [ControllerId.RULES]: rulesScreen,
-  [ControllerId.GAME]: gameScreen,
-  [ControllerId.STATS]: statsScreen
-};
-
 const saveState = (state) => {
   return JSON.stringify(state);
 };
@@ -40,6 +32,14 @@ const loadState = (dataString) => {
 
 export default class Application {
   static init() {
+    this.Route = {
+      [ControllerId.INTRO]: introScreen,
+      [ControllerId.GREETING]: greetingScreen,
+      [ControllerId.RULES]: rulesScreen,
+      [ControllerId.GAME]: gameScreen,
+      [ControllerId.STATS]: statsScreen
+    };
+
     const hashChangeHandler = () => {
       const hashValue = location.hash.replace(`#`, ``);
       const [id, data] = hashValue.split(`?`);
@@ -52,7 +52,7 @@ export default class Application {
   }
 
   static changeHash(id, data) {
-    const controller = Route[id];
+    const controller = this.Route[id];
 
     if (controller) {
       if (!data) {
