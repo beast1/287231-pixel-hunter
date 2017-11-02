@@ -1,7 +1,7 @@
 import introScreen from "./intro/intro-screen";
 import greetingScreen from "./greeting/greeting-screen";
 import rulesScreen from "./rules/rules-screen";
-import gameScreen from "./game/game-screen";
+import GameScreen from "./game/game-screen";
 import statsScreen from "./stats/stats-screen";
 import {getGame, getInitialHistory, getInitialState} from "./data/game-data";
 
@@ -31,12 +31,12 @@ const loadState = (dataString) => {
 };
 
 export default class Application {
-  static init() {
+  static init(game) {
     this.Route = {
       [ControllerId.INTRO]: introScreen,
       [ControllerId.GREETING]: greetingScreen,
       [ControllerId.RULES]: rulesScreen,
-      [ControllerId.GAME]: gameScreen,
+      [ControllerId.GAME]: new GameScreen(game),
       [ControllerId.STATS]: statsScreen
     };
 
@@ -83,3 +83,4 @@ export default class Application {
     location.hash = `${ControllerId.STATS}?${saveState(game)}`;
   }
 }
+

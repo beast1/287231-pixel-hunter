@@ -29,27 +29,6 @@ export const LevelClass = {
   [LevelType.ONE_OF_THREE]: `game__content game__content--triple`
 };
 
-// const ImageType = {
-//   PAINTING: `painting`,
-//   PHOTO: `photo`
-// };
-
-const levels = [];
-
-const whenDataIsLoaded = fetch();
-
-whenDataIsLoaded.
-    then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else if (response.status === 404) {
-        return [];
-      }
-
-      throw new Error(`Неизвестный статус: ${response.status} ${response.statusText}`);
-    }).
-    then((data) => console.log(data)).catch((err) => err);
-
 export const getInitialState = () => {
   return {
     level: 0,
@@ -135,8 +114,4 @@ export const changeGameState = (game, condition) => {
   newGame.state.time = INITIAL_TIME;
 
   return newGame;
-};
-
-export const getLevel = (level) => {
-  return levels[level];
 };

@@ -1,27 +1,27 @@
 import AbstractView from "../view";
 import footer from "../game/footer/footer";
 import getHeader from "../game/header/header";
-import {getLevel, LevelType, LevelClass} from "../data/game-data";
+import {LevelType, LevelClass} from "../data/game-data";
 import drawStats from "./stats/game-stats";
 
 const drawLevel = (levelData, history) => {
-  return `<p class="game__task">${levelData.description}</p>
+  return `<p class="game__task">${levelData.question}</p>
     <form class="${LevelClass[levelData.type]}">
-    ${levelData.options.map((it, i) => {
-    if (levelData.type === LevelType.TRIPLE) {
+    ${levelData.answers.map((it, i) => {
+    if (levelData.type === LevelType.ONE_OF_THREE) {
       return `<div class="game__option">
-        <img src="${it.image}" alt="Option" width="304" height="455">
+        <img src="${it.image.url}" alt="Option" width="${it.image.width}" height="${it.image.height}">
       </div>`;
     }
 
     return `<div class="game__option">
-        <img src="${it.image}" alt="Option">
+        <img src="${it.image.url}" alt="Option" width="${it.image.width}" height="${it.image.height}">
         <label class="game__answer  game__answer--photo">
           <input name="question${i + 1}" type="radio" value="photo">
           <span>Фото</span>
         </label>
         <label class="game__answer  game__answer--wide  game__answer--paint">
-          <input name="question${i + 1}" type="radio" value="paint">
+          <input name="question${i + 1}" type="radio" value="painting">
           <span>Рисунок</span>
         </label>
       </div>`;
@@ -30,10 +30,10 @@ const drawLevel = (levelData, history) => {
 };
 
 export default class LevelView extends AbstractView {
-  constructor(game) {
+  constructor(game, level) {
     super();
     this.game = game;
-    this.level = getLevel(this.game.state.level);
+    this.level = level;
   }
 
   get template() {
@@ -51,10 +51,10 @@ export default class LevelView extends AbstractView {
 
     form.addEventListener(`click`, (evt) => {
       const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-      const answers = this.level.options.map((it) =>
+      const answers = this.level.answers.map((it) =>
         it.type);
 
-      if (this.level.type === LevelType.TRIPLE) {
+      if (this.level.type === LevelType.ONE_OF_THREE) {
         if (evt.target.classList.contains(`game__option`)) {
           const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
           answers[index] = this.level.expect;
