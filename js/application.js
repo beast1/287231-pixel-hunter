@@ -1,7 +1,7 @@
 import introScreen from "./intro/intro-screen";
 import greetingScreen from "./greeting/greeting-screen";
 import rulesScreen from "./rules/rules-screen";
-import gameScreen from "./game/game-screen";
+import GameScreen from "./game/game-screen";
 import statsScreen from "./stats/stats-screen";
 import {getGame, getInitialHistory, getInitialState} from "./data/game-data";
 
@@ -11,14 +11,6 @@ const ControllerId = {
   RULES: `rules`,
   GAME: `game`,
   STATS: `stats`
-};
-
-const Route = {
-  [ControllerId.INTRO]: introScreen,
-  [ControllerId.GREETING]: greetingScreen,
-  [ControllerId.RULES]: rulesScreen,
-  [ControllerId.GAME]: gameScreen,
-  [ControllerId.STATS]: statsScreen
 };
 
 const saveState = (state) => {
@@ -39,7 +31,15 @@ const loadState = (dataString) => {
 };
 
 export default class Application {
-  static init() {
+  static init(game) {
+    this.Route = {
+      [ControllerId.INTRO]: introScreen,
+      [ControllerId.GREETING]: greetingScreen,
+      [ControllerId.RULES]: rulesScreen,
+      [ControllerId.GAME]: new GameScreen(game),
+      [ControllerId.STATS]: statsScreen
+    };
+
     const hashChangeHandler = () => {
       const hashValue = location.hash.replace(`#`, ``);
       const [id, data] = hashValue.split(`?`);
@@ -52,7 +52,7 @@ export default class Application {
   }
 
   static changeHash(id, data) {
-    const controller = Route[id];
+    const controller = this.Route[id];
 
     if (controller) {
       if (!data) {
@@ -83,3 +83,4 @@ export default class Application {
     location.hash = `${ControllerId.STATS}?${saveState(game)}`;
   }
 }
+
