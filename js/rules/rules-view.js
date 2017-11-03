@@ -38,11 +38,14 @@ export default class RulesView extends AbstractView {
 
     button.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this.onStart();
+      const userName = input.value;
+      this.onStart(userName);
     });
   }
 
   onBack() {}
 
-  onStart() {}
+  onStart(userName) {
+    return userName;
+  }
 }

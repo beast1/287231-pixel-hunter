@@ -4,6 +4,7 @@ import rulesScreen from "./rules/rules-screen";
 import GameScreen from "./game/game-screen";
 import statsScreen from "./stats/stats-screen";
 import {getGame, getInitialHistory, getInitialState} from "./data/game-data";
+import Loader from "./loader";
 
 const ControllerId = {
   INTRO: ``,
@@ -80,7 +81,9 @@ export default class Application {
   }
 
   static showStats(game) {
-    location.hash = `${ControllerId.STATS}?${saveState(game)}`;
+    Loader.saveResults(game).then(() => {
+      location.hash = ControllerId.STATS;
+    });
   }
 }
 

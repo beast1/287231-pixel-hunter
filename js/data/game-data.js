@@ -29,11 +29,12 @@ export const LevelClass = {
   [LevelType.ONE_OF_THREE]: `game__content game__content--triple`
 };
 
-export const getInitialState = () => {
+export const getInitialState = (userName) => {
   return {
     level: 0,
     lives: 3,
-    time: 30
+    time: 30,
+    userName
   };
 };
 

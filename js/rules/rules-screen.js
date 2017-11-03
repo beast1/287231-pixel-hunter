@@ -1,6 +1,7 @@
 import {showScreen} from "../utils";
 import Application from "../application";
 import RulesView from "./rules-view";
+import {getGame, getInitialHistory, getInitialState} from "../data/game-data";
 
 class RulesScreen {
   constructor() {
@@ -12,8 +13,9 @@ class RulesScreen {
       Application.showGreeting();
     };
 
-    this.view.onStart = () => {
-      Application.startGame();
+    this.view.onStart = (name) => {
+      const game = getGame(getInitialState(name), getInitialHistory());
+      Application.startGame(game);
     };
 
     showScreen(this.view);
