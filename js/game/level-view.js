@@ -4,6 +4,8 @@ import getHeader from "../game/header/header";
 import {LevelType, LevelClass} from "../data/game-data";
 import drawStats from "./stats/game-stats";
 
+const TRIGGER_TIME = 5;
+
 const drawLevel = (levelData, history) => {
   return `<p class="game__task">${levelData.question}</p>
     <form class="${LevelClass[levelData.type]}">
@@ -77,6 +79,13 @@ export default class LevelView extends AbstractView {
 
   updateTime(time) {
     this.timeElement = this.element.querySelector(`.game__timer`);
+    this.timeElement.style.visibility = `visible`;
     this.timeElement.textContent = time;
+
+    if (time <= TRIGGER_TIME) {
+      setTimeout(() => {
+        this.timeElement.style.visibility = `hidden`;
+      }, 500);
+    }
   }
 }

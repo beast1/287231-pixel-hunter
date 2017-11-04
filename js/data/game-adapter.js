@@ -19,14 +19,8 @@ export const adaptQuestions = (levels) =>
     return it;
   });
 
-export const adaptStats = (stats) => {
+export const adaptStats = (stats) =>
   stats.map((it) => {
-    return {
-      history: it.stats,
-      state: {
-        lives: it.lives,
-      },
-      score: countScore(it.stats, it.lives)
-    };
+    it.score = countScore(it.history, it.state.lives);
+    return it;
   });
-};

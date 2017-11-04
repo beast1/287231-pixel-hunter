@@ -18,8 +18,6 @@ export default class Loader {
       }
     };
 
-    console.log(game);
-
     return fetch(`${URL}/stats/${game.state.userName}`, requestSettings);
   }
 }

@@ -20,14 +20,9 @@ const saveState = (state) => {
 
 const loadState = (dataString) => {
   try {
-    const data = JSON.parse(dataString);
-    if (!data.hasOwnProperty(`state`) || !data.hasOwnProperty(`history`)) {
-      return getGame(getInitialState(), getInitialHistory());
-    }
-
     return JSON.parse(dataString);
   } catch (e) {
-    return getGame(getInitialState(), getInitialHistory());
+    return e;
   }
 };
 
@@ -81,8 +76,13 @@ export default class Application {
   }
 
   static showStats(game) {
+    const currentData = {
+      userName: game.state.userName,
+      isWin: game.state.lives > 0
+    };
+
     Loader.saveResults(game).then(() => {
-      location.hash = ControllerId.STATS;
+      location.hash = `${ControllerId.STATS}?${saveState(currentData)}`;
     });
   }
 }

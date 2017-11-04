@@ -22,14 +22,14 @@ const renderResults = (result, index) => {
 
   if (result.score < 0) {
     tableContent.push(`<tr>
-        <td class="result__number">${index}</td>
+        <td class="result__number">${index + 1}</td>
         <td>${statsBar}</td>
         <td class="result__total"></td>
         <td class="result__total result__total--final">fail</td>
       </tr>`);
   } else {
     tableContent.push(`<tr>
-        <td class="result__number"></td>
+        <td class="result__number">${index + 1}</td>
         <td colspan="2">
           ${statsBar}
         </td>
@@ -78,16 +78,18 @@ const renderResults = (result, index) => {
 
 export default class StatsView extends AbstractView {
   get template() {
-    return `<h2>Загрузка результатов</h2>`;
+    return `${getHeader()}
+    <div class="result">
+      <h2>Загрузка результатов</h2>
+    </div>
+    ${footer}`;
   }
 
   updateResults(results, currentResult) {
-    this.element.innerHTML = `${getHeader()}
-    <div class="result">
-    <h1>${currentResult}</h1>
-        ${results.map((it, i) => renderResults(it, i)).join(``)}
-    </div>
-    ${footer}`;
+    const resultsElement = this.element.querySelector(`.result`);
+
+    resultsElement.innerHTML = `<h1>${currentResult}</h1>
+        ${results.reverse().map((it, i) => renderResults(it, i)).join(``)}`;
   }
 
   bind() {

@@ -3,17 +3,18 @@ import Application from "../application";
 import StatsView from "./stats-view";
 import Loader from "../loader";
 import {adaptStats} from "../data/game-adapter";
-import {countScore, Result} from "../data/game-data";
+import {Result} from "../data/game-data";
 
 class StatsScreen {
-  init(game) {
-    const result = countScore(game.history, game.state.lives) < 0 ? Result.LOSE : Result.VICTORY;
+  init(data) {
+    const result = data.isWin ? Result.VICTORY : Result.LOSE;
     this.view = new StatsView();
-    this.view.onBack = () => Application.showGreeting();
 
-    Loader.loadResults(game.userName).
+    Loader.loadResults(data.userName).
         then(adaptStats).
-        then((results) => this.view.updateResults(results, result));
+        then((stats) => this.view.updateResults(stats, result));
+
+    this.view.onBack = () => Application.showGreeting();
 
     showScreen(this.view);
   }
