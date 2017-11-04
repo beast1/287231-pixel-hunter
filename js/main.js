@@ -2,6 +2,7 @@ import Application from "./application";
 import Loader from "./loader";
 import {adaptQuestions} from "./data/game-adapter";
 
+Application.init();
 Application.showIntro();
 Loader.load().
     then(adaptQuestions).
