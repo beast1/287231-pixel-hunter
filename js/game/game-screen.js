@@ -19,7 +19,7 @@ class GameScreen {
       const isCorrect = answer.every((it, i) => it === this.levels[game.state._level].answers[i].type);
       const newGame = changeGameState(game, isCorrect);
 
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     };
 
     this.view.onBack = () => {
@@ -42,7 +42,7 @@ class GameScreen {
       const newGame = changeGameState(this.game, false);
 
       this.stopTimer();
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     } else {
       this.view.updateTime(state.state.time);
       this._timer = setTimeout(() => this.tick(), 1000);
