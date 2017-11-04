@@ -1,14 +1,14 @@
 (function () {
 'use strict';
 
+const mainElement = document.querySelector(`.central`);
+
 const getElementFromTemplate = (layout) => {
   const div = document.createElement(`div`);
   div.innerHTML = layout;
 
   return div;
 };
-
-const mainElement = document.querySelector(`.central`);
 
 const showScreen = (view) => {
   mainElement.innerHTML = ``;
@@ -20,6 +20,14 @@ class AbstractView {
     throw new Error(`Template for the view is not defined`);
   }
 
+  get element() {
+    if (!this._element) {
+      this._element = this.render();
+      this.bind();
+    }
+    return this._element;
+  }
+
   render() {
     return getElementFromTemplate(this.template);
   }
@@ -28,13 +36,6 @@ class AbstractView {
 
   }
 
-  get element() {
-    if (!this._element) {
-      this._element = this.render();
-      this.bind();
-    }
-    return this._element;
-  }
 }
 
 const footer = `<footer class="footer">
@@ -203,10 +204,11 @@ class RulesView extends AbstractView {
 
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
-const MAX_ANSWERS_LENGTH = 10;
 const FAST_TIME = 20;
 const SLOW_TIME = 10;
 const INITIAL_TIME = 30;
+
+const MAX_ANSWERS_LENGTH = 10;
 
 const AnswerType = {
   FAST: `fast`,
@@ -234,7 +236,7 @@ const LevelClass = {
 
 const getInitialState = (userName) => {
   return {
-    level: 0,
+    _level: 0,
     lives: 3,
     time: 30,
     userName
@@ -245,7 +247,6 @@ const getInitialHistory = () => {
   return [];
 };
 
-
 const getGame = (state, history) => {
   return {
     state,
@@ -253,7 +254,7 @@ const getGame = (state, history) => {
   };
 };
 
-const PointsForAnswers = {
+const PointForAnswers = {
   [AnswerType.FAST]: 150,
   [AnswerType.SLOW]: 50,
   [AnswerType.CORRECT]: 100,
@@ -278,11 +279,11 @@ const countScore = (answers, lives) => {
   const initialValue = lives * LIFE_WORTH;
 
   return answers.reduce((sum, answer) => {
-    if (typeof PointsForAnswers[answer] !== `number`) {
+    if (typeof PointForAnswers[answer] !== `number`) {
       throw new Error(`wrong answer type`);
     }
 
-    return sum + PointsForAnswers[answer];
+    return sum + PointForAnswers[answer];
   }, initialValue);
 };
 
@@ -314,7 +315,7 @@ const changeGameState = (game, condition) => {
     newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  newGame.state.level += 1;
+  newGame.state._level += 1;
   newGame.state.time = INITIAL_TIME;
 
   return newGame;
@@ -384,13 +385,24 @@ class LevelView extends AbstractView {
   constructor(game, level) {
     super();
     this.game = game;
-    this.level = level;
+    this._level = level;
   }
 
   get template() {
     return `${getHeader(this.game.state)}
-    ${drawLevel(this.level, this.game.history)}
+    ${drawLevel(this._level, this.game.history)}
     ${footer}`;
+  }
+
+  updateTime(time) {
+    this._timeElement.style.visibility = `visible`;
+    this._timeElement.textContent = time;
+
+    if (time <= TRIGGER_TIME) {
+      setTimeout(() => {
+        this._timeElement.style.visibility = `hidden`;
+      }, 500);
+    }
   }
 
   bind() {
@@ -398,24 +410,26 @@ class LevelView extends AbstractView {
     const fields = form.querySelectorAll(`.game__option`);
     const back = this.element.querySelector(`.back`);
 
+    this._timeElement = this.element.querySelector(`.game__timer`);
+
     back.addEventListener(`click`, this.onBack);
 
     form.addEventListener(`click`, (evt) => {
       const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-      const answers = this.level.answers.map((it) =>
+      const answers = this._level.answers.map((it) =>
         it.type);
 
-      if (this.level.type === LevelType.ONE_OF_THREE) {
+      if (this._level.type === LevelType.ONE_OF_THREE) {
         if (evt.target.classList.contains(`game__option`)) {
           const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
-          answers[index] = this.level.expect;
+          answers[index] = this._level.expect;
 
           this.onAnswer(answers);
         }
       } else if (radios.length === fields.length) {
-        const answer = radios.map((it) =>
+        const userAnswers = radios.map((it) =>
           it.value);
-        this.onAnswer(answer);
+        this.onAnswer(userAnswers);
       }
     });
   }
@@ -424,18 +438,6 @@ class LevelView extends AbstractView {
 
   onAnswer(answer) {
     return answer;
-  }
-
-  updateTime(time) {
-    this.timeElement = this.element.querySelector(`.game__timer`);
-    this.timeElement.style.visibility = `visible`;
-    this.timeElement.textContent = time;
-
-    if (time <= TRIGGER_TIME) {
-      setTimeout(() => {
-        this.timeElement.style.visibility = `hidden`;
-      }, 500);
-    }
   }
 }
 
@@ -446,26 +448,29 @@ class GameScreen {
 
   init(game) {
     this.game = game;
-    this.level = this.levels[this.game.state.level];
-    this.view = new LevelView(game, this.level);
+    this._level = this.levels[this.game.state._level];
+    this.view = new LevelView(this.game, this._level);
 
     this.view.onAnswer = (answer) => {
       this.stopTimer();
 
-      const isCorrect = answer.every((it, i) => it === this.levels[game.state.level].answers[i].type);
+      const isCorrect = answer.every((it, i) => it === this.levels[game.state._level].answers[i].type);
       const newGame = changeGameState(game, isCorrect);
 
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     };
 
     this.view.onBack = () => {
       this.stopTimer();
-      Application.showGreeting();
+      // eslint-disable-next-line
+      if (confirm(`Вы уверены? Весь прогресс в игре будет потерян`)) {
+        Application.showGreeting();
+      }
     };
 
     showScreen(this.view);
 
-    this.timer = setTimeout(() => this.tick(), 1000);
+    this._timer = setTimeout(() => this.tick(), 1000);
   }
 
   tick() {
@@ -475,23 +480,23 @@ class GameScreen {
       const newGame = changeGameState(this.game, false);
 
       this.stopTimer();
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     } else {
       this.view.updateTime(state.state.time);
-      this.timer = setTimeout(() => this.tick(), 1000);
-    }
-  }
-
-  toggleScreens(game) {
-    if (game.state.level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
-      Application.showStats(game);
-    } else {
-      Application.startGame(game);
+      this._timer = setTimeout(() => this.tick(), 1000);
     }
   }
 
   stopTimer() {
-    clearTimeout(this.timer);
+    clearTimeout(this._timer);
+  }
+
+  static toggleScreens(game) {
+    if (game.state._level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
+      Application.showStats(game);
+    } else {
+      Application.startGame(game);
+    }
   }
 }
 
