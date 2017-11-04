@@ -1,9 +1,10 @@
 const LIFE_WORTH = 50;
 const MAX_LIFES = 3;
-export const MAX_ANSWERS_LENGTH = 10;
 const FAST_TIME = 20;
 const SLOW_TIME = 10;
 const INITIAL_TIME = 30;
+
+export const MAX_ANSWERS_LENGTH = 10;
 
 export const AnswerType = {
   FAST: `fast`,
@@ -31,7 +32,7 @@ export const LevelClass = {
 
 export const getInitialState = (userName) => {
   return {
-    level: 0,
+    _level: 0,
     lives: 3,
     time: 30,
     userName
@@ -42,7 +43,6 @@ export const getInitialHistory = () => {
   return [];
 };
 
-
 export const getGame = (state, history) => {
   return {
     state,
@@ -50,7 +50,7 @@ export const getGame = (state, history) => {
   };
 };
 
-const PointsForAnswers = {
+const PointForAnswers = {
   [AnswerType.FAST]: 150,
   [AnswerType.SLOW]: 50,
   [AnswerType.CORRECT]: 100,
@@ -75,11 +75,11 @@ export const countScore = (answers, lives) => {
   const initialValue = lives * LIFE_WORTH;
 
   return answers.reduce((sum, answer) => {
-    if (typeof PointsForAnswers[answer] !== `number`) {
+    if (typeof PointForAnswers[answer] !== `number`) {
       throw new Error(`wrong answer type`);
     }
 
-    return sum + PointsForAnswers[answer];
+    return sum + PointForAnswers[answer];
   }, initialValue);
 };
 
@@ -111,7 +111,7 @@ export const changeGameState = (game, condition) => {
     newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  newGame.state.level += 1;
+  newGame.state._level += 1;
   newGame.state.time = INITIAL_TIME;
 
   return newGame;
