@@ -10,26 +10,29 @@ class GameScreen {
 
   init(game) {
     this.game = game;
-    this.level = this.levels[this.game.state.level];
-    this.view = new LevelView(game, this.level);
+    this._level = this.levels[this.game.state._level];
+    this.view = new LevelView(this.game, this._level);
 
     this.view.onAnswer = (answer) => {
       this.stopTimer();
 
-      const isCorrect = answer.every((it, i) => it === this.levels[game.state.level].answers[i].type);
+      const isCorrect = answer.every((it, i) => it === this.levels[game.state._level].answers[i].type);
       const newGame = changeGameState(game, isCorrect);
 
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     };
 
     this.view.onBack = () => {
       this.stopTimer();
-      Application.showGreeting();
+      // eslint-disable-next-line
+      if (confirm(`Вы уверены? Весь прогресс в игре будет потерян`)) {
+        Application.showGreeting();
+      }
     };
 
     showScreen(this.view);
 
-    this.timer = setTimeout(() => this.tick(), 1000);
+    this._timer = setTimeout(() => this.tick(), 1000);
   }
 
   tick() {
@@ -39,23 +42,23 @@ class GameScreen {
       const newGame = changeGameState(this.game, false);
 
       this.stopTimer();
-      this.toggleScreens(newGame);
+      GameScreen.toggleScreens(newGame);
     } else {
       this.view.updateTime(state.state.time);
-      this.timer = setTimeout(() => this.tick(), 1000);
-    }
-  }
-
-  toggleScreens(game) {
-    if (game.state.level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
-      Application.showStats(game);
-    } else {
-      Application.startGame(game);
+      this._timer = setTimeout(() => this.tick(), 1000);
     }
   }
 
   stopTimer() {
-    clearTimeout(this.timer);
+    clearTimeout(this._timer);
+  }
+
+  static toggleScreens(game) {
+    if (game.state._level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
+      Application.showStats(game);
+    } else {
+      Application.startGame(game);
+    }
   }
 }
 

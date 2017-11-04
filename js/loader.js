@@ -1,7 +1,23 @@
-const URL = `https://es.dump.academy/pixel-hunter/questions`;
+const URL = `https://es.dump.academy/pixel-hunter`;
 
 export default class Loader {
   static load() {
-    return fetch(URL).then((data) => data.json());
+    return fetch(`${URL}/questions`).then((data) => data.json());
+  }
+
+  static loadResults(name) {
+    return fetch(`${URL}/stats/${name}`).then((data) => data.json());
+  }
+
+  static saveResults(game) {
+    const requestSettings = {
+      method: `POST`,
+      body: JSON.stringify(game),
+      headers: {
+        'Content-Type': `application/json`
+      }
+    };
+
+    return fetch(`${URL}/stats/${game.state.userName}`, requestSettings);
   }
 }

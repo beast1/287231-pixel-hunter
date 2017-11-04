@@ -1,10 +1,11 @@
 import Application from "./application";
 import Loader from "./loader";
-import adapt from "./data/game-adapter";
+import {adaptQuestions} from "./data/game-adapter";
 
+Application.init();
 Application.showIntro();
 Loader.load().
-    then(adapt).
+    then(adaptQuestions).
     then((data) => Application.init(data)).
     then(Application.showGreeting()).
     catch((err) => err);
