@@ -353,6 +353,8 @@ const getStats = (gameHistory) => {
       </ul>`;
 };
 
+const TRIGGER_TIME = 5;
+
 const drawLevel = (levelData, history) => {
   return `<p class="game__task">${levelData.question}</p>
     <form class="${LevelClass[levelData.type]}">
@@ -426,7 +428,14 @@ class LevelView extends AbstractView {
 
   updateTime(time) {
     this.timeElement = this.element.querySelector(`.game__timer`);
+    this.timeElement.style.visibility = `visible`;
     this.timeElement.textContent = time;
+
+    if (time <= TRIGGER_TIME) {
+      setTimeout(() => {
+        this.timeElement.style.visibility = `hidden`;
+      }, 500);
+    }
   }
 }
 
@@ -504,14 +513,14 @@ const renderResults = (result, index) => {
 
   if (result.score < 0) {
     tableContent.push(`<tr>
-        <td class="result__number">${index}</td>
+        <td class="result__number">${index + 1}</td>
         <td>${statsBar}</td>
         <td class="result__total"></td>
         <td class="result__total result__total--final">fail</td>
       </tr>`);
   } else {
     tableContent.push(`<tr>
-        <td class="result__number"></td>
+        <td class="result__number">${index + 1}</td>
         <td colspan="2">
           ${statsBar}
         </td>
@@ -560,16 +569,18 @@ const renderResults = (result, index) => {
 
 class StatsView extends AbstractView {
   get template() {
-    return `<h2>Загрузка результатов</h2>`;
+    return `${getHeader()}
+    <div class="result">
+      <h2>Загрузка результатов</h2>
+    </div>
+    ${footer}`;
   }
 
   updateResults(results, currentResult) {
-    this.element.innerHTML = `${getHeader()}
-    <div class="result">
-    <h1>${currentResult}</h1>
-        ${results.map((it, i) => renderResults(it, i)).join(``)}
-    </div>
-    ${footer}`;
+    const resultsElement = this.element.querySelector(`.result`);
+
+    resultsElement.innerHTML = `<h1>${currentResult}</h1>
+        ${results.reverse().map((it, i) => renderResults(it, i)).join(``)}`;
   }
 
   bind() {
@@ -601,8 +612,6 @@ class Loader {
       }
     };
 
-    console.log(game);
-
     return fetch(`${URL}/stats/${game.state.userName}`, requestSettings);
   }
 }
@@ -626,27 +635,22 @@ const adaptQuestions = (levels) =>
     return it;
   });
 
-const adaptStats = (stats) => {
+const adaptStats = (stats) =>
   stats.map((it) => {
-    return {
-      history: it.stats,
-      state: {
-        lives: it.lives,
-      },
-      score: countScore(it.stats, it.lives)
-    };
+    it.score = countScore(it.history, it.state.lives);
+    return it;
   });
-};
 
 class StatsScreen {
-  init(game) {
-    const result = countScore(game.history, game.state.lives) < 0 ? Result.LOSE : Result.VICTORY;
+  init(data) {
+    const result = data.isWin ? Result.VICTORY : Result.LOSE;
     this.view = new StatsView();
-    this.view.onBack = () => Application.showGreeting();
 
-    Loader.loadResults(game.userName).
+    Loader.loadResults(data.userName).
         then(adaptStats).
-        then((results) => this.view.updateResults(results, result));
+        then((stats) => this.view.updateResults(stats, result));
+
+    this.view.onBack = () => Application.showGreeting();
 
     showScreen(this.view);
   }
@@ -668,14 +672,9 @@ const saveState = (state) => {
 
 const loadState = (dataString) => {
   try {
-    const data = JSON.parse(dataString);
-    if (!data.hasOwnProperty(`state`) || !data.hasOwnProperty(`history`)) {
-      return getGame(getInitialState(), getInitialHistory());
-    }
-
     return JSON.parse(dataString);
   } catch (e) {
-    return getGame(getInitialState(), getInitialHistory());
+    return e;
   }
 };
 
@@ -729,8 +728,13 @@ class Application {
   }
 
   static showStats(game) {
+    const currentData = {
+      userName: game.state.userName,
+      isWin: game.state.lives > 0
+    };
+
     Loader.saveResults(game).then(() => {
-      location.hash = ControllerId.STATS;
+      location.hash = `${ControllerId.STATS}?${saveState(currentData)}`;
     });
   }
 }
