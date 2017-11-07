@@ -10,20 +10,20 @@ class GameScreen {
 
   init(game) {
     this.game = game;
-    this._level = this.levels[this.game.state._level];
-    this.view = new LevelView(this.game, this._level);
+    this.level = this.levels[this.game.state.level];
+    this.view = new LevelView(this.game, this.level);
 
     this.view.onAnswer = (answer) => {
-      this.stopTimer();
+      this._stopTimer();
 
-      const isCorrect = answer.every((it, i) => it === this.levels[game.state._level].answers[i].type);
-      const newGame = changeGameState(game, isCorrect);
+      const isCorrect = answer.every((it, i) => it === this.levels[this.game.state.level].answers[i].type);
+      const newGame = changeGameState(this.game, isCorrect);
 
-      GameScreen.toggleScreens(newGame);
+      GameScreen._toggleScreens(newGame);
     };
 
     this.view.onBack = () => {
-      this.stopTimer();
+      this._stopTimer();
       // eslint-disable-next-line
       if (confirm(`Вы уверены? Весь прогресс в игре будет потерян`)) {
         Application.showGreeting();
@@ -32,29 +32,29 @@ class GameScreen {
 
     showScreen(this.view);
 
-    this._timer = setTimeout(() => this.tick(), 1000);
+    this._timer = setTimeout(() => this._tick(), 1000);
   }
 
-  tick() {
+  _tick() {
     const state = tick(this.game);
 
     if (!state) {
       const newGame = changeGameState(this.game, false);
 
-      this.stopTimer();
-      GameScreen.toggleScreens(newGame);
+      this._stopTimer();
+      GameScreen._toggleScreens(newGame);
     } else {
       this.view.updateTime(state.state.time);
-      this._timer = setTimeout(() => this.tick(), 1000);
+      this._timer = setTimeout(() => this._tick(), 1000);
     }
   }
 
-  stopTimer() {
+  _stopTimer() {
     clearTimeout(this._timer);
   }
 
-  static toggleScreens(game) {
-    if (game.state._level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
+  static _toggleScreens(game) {
+    if (game.state.level === MAX_ANSWERS_LENGTH || game.state.lives < 0) {
       Application.showStats(game);
     } else {
       Application.startGame(game);
