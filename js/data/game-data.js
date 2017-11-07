@@ -1,9 +1,8 @@
 const LIFE_WORTH = 50;
-const MAX_LIFES = 3;
 const FAST_TIME = 20;
 const SLOW_TIME = 10;
 const INITIAL_TIME = 30;
-
+export const MAX_LIVES = 3;
 export const MAX_ANSWERS_LENGTH = 10;
 
 export const AnswerType = {
@@ -32,7 +31,7 @@ export const LevelClass = {
 
 export const getInitialState = (userName) => {
   return {
-    _level: 0,
+    level: 0,
     lives: 3,
     time: 30,
     userName
@@ -68,7 +67,7 @@ export const countScore = (answers, lives) => {
     return -1;
   }
 
-  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIFES - lives)) {
+  if (answers.filter((it) => it === AnswerType.WRONG).length !== (MAX_LIVES - lives)) {
     throw new Error(`impossible input combination`);
   }
 
@@ -111,7 +110,7 @@ export const changeGameState = (game, condition) => {
     newGame = setLives(newGame, newGame.state.lives - 1);
   }
 
-  newGame.state._level += 1;
+  newGame.state.level += 1;
   newGame.state.time = INITIAL_TIME;
 
   return newGame;

@@ -1,3 +1,5 @@
+import {MAX_LIVES} from "../../data/game-data";
+
 const getHeader = (data) => {
   const headerDefault = `<header class="header">
     <div class="header__back">
@@ -14,7 +16,7 @@ const getHeader = (data) => {
   return `${headerDefault}
     <h1 class="game__timer">${data.time}</h1>
     <div class="game__lives">
-      ${new Array(3 - data.lives)
+      ${new Array(MAX_LIVES - data.lives)
       .fill(`<img src="img/heart__empty.svg" class="game__heart" alt="Life" width="32" height="32">`)
       .join(``)}
       ${new Array(data.lives)

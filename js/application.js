@@ -27,12 +27,12 @@ const loadState = (dataString) => {
 };
 
 export default class Application {
-  static init(game) {
+  static init(levels) {
     this.Route = {
       [ControllerId.INTRO]: introScreen,
       [ControllerId.GREETING]: greetingScreen,
       [ControllerId.RULES]: rulesScreen,
-      [ControllerId.GAME]: new GameScreen(game),
+      [ControllerId.GAME]: new GameScreen(levels),
       [ControllerId.STATS]: statsScreen
     };
 
@@ -40,7 +40,7 @@ export default class Application {
       const hashValue = location.hash.replace(`#`, ``);
       const [id, data] = hashValue.split(`?`);
 
-      this.changeHash(id, data);
+      this.changeHash(id, decodeURI(data));
     };
 
     window.onhashchange = hashChangeHandler;

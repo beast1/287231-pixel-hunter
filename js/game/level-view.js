@@ -35,12 +35,12 @@ export default class LevelView extends AbstractView {
   constructor(game, level) {
     super();
     this.game = game;
-    this._level = level;
+    this.level = level;
   }
 
   get template() {
     return `${getHeader(this.game.state)}
-    ${drawLevel(this._level, this.game.history)}
+    ${drawLevel(this.level, this.game.history)}
     ${footer}`;
   }
 
@@ -66,13 +66,13 @@ export default class LevelView extends AbstractView {
 
     form.addEventListener(`click`, (evt) => {
       const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-      const answers = this._level.answers.map((it) =>
+      const answers = this.level.answers.map((it) =>
         it.type);
 
-      if (this._level.type === LevelType.ONE_OF_THREE) {
+      if (this.level.type === LevelType.ONE_OF_THREE) {
         if (evt.target.classList.contains(`game__option`)) {
           const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
-          answers[index] = this._level.expect;
+          answers[index] = this.level.expect;
 
           this.onAnswer(answers);
         }
