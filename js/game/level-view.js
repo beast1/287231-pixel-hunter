@@ -59,29 +59,32 @@ export default class LevelView extends AbstractView {
     const form = this.element.querySelector(`.game__content`);
     const fields = form.querySelectorAll(`.game__option`);
     const back = this.element.querySelector(`.back`);
+    const answers = this.level.answers.map((it) => it.type);
 
     this._timeElement = this.element.querySelector(`.game__timer`);
 
     back.addEventListener(`click`, this.onBack);
 
-    form.addEventListener(`click`, (evt) => {
-      const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
-      const answers = this.level.answers.map((it) =>
-        it.type);
-
-      if (this.level.type === LevelType.ONE_OF_THREE) {
+    if (this.level.type === LevelType.ONE_OF_THREE) {
+      form.addEventListener(`mouseup`, (evt) => {
         if (evt.target.classList.contains(`game__option`)) {
           const index = Array.from(evt.target.parentNode.children).indexOf(evt.target);
           answers[index] = this.level.expect;
 
           this.onAnswer(answers);
         }
-      } else if (radios.length === fields.length) {
-        const userAnswers = radios.map((it) =>
-          it.value);
-        this.onAnswer(userAnswers);
-      }
-    });
+      });
+    } else {
+      form.addEventListener(`click`, () => {
+        const radios = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
+
+        if (radios.length === fields.length) {
+          const userAnswers = radios.map((it) =>
+            it.value);
+          this.onAnswer(userAnswers);
+        }
+      });
+    }
   }
 
   onBack() {}

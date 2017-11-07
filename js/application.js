@@ -78,7 +78,7 @@ export default class Application {
   static showStats(game) {
     const currentData = {
       userName: game.state.userName,
-      isWin: game.state.lives > 0
+      isWin: game.state.lives >= 0
     };
 
     Loader.saveResults(game).then(() => {
