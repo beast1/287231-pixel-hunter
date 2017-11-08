@@ -1,4 +1,3 @@
-import introScreen from "./intro/intro-screen";
 import greetingScreen from "./greeting/greeting-screen";
 import rulesScreen from "./rules/rules-screen";
 import GameScreen from "./game/game-screen";
@@ -7,8 +6,7 @@ import {getGame, getInitialHistory, getInitialState} from "./data/game-data";
 import Loader from "./loader";
 
 const ControllerId = {
-  INTRO: ``,
-  GREETING: `greeting`,
+  GREETING: ``,
   RULES: `rules`,
   GAME: `game`,
   STATS: `stats`
@@ -29,7 +27,6 @@ const loadState = (dataString) => {
 export default class Application {
   static init(levels) {
     this.Route = {
-      [ControllerId.INTRO]: introScreen,
       [ControllerId.GREETING]: greetingScreen,
       [ControllerId.RULES]: rulesScreen,
       [ControllerId.GAME]: new GameScreen(levels),
@@ -57,10 +54,6 @@ export default class Application {
         controller.init(loadState(data));
       }
     }
-  }
-
-  static showIntro() {
-    location.hash = ControllerId.INTRO;
   }
 
   static showGreeting() {

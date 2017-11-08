@@ -18,17 +18,17 @@ const renderResults = (result, index) => {
   const correctAnswers = MAX_ANSWERS_LENGTH - (answers[AnswerType.WRONG] || 0);
   const fastAnswers = answers[AnswerType.FAST];
   const slowAnswers = answers[AnswerType.SLOW];
-  const tableContent = [];
+  const tableRows = [];
 
   if (result.score < 0) {
-    tableContent.push(`<tr>
+    tableRows.push(`<tr>
         <td class="result__number">${index + 1}</td>
         <td>${statsBar}</td>
         <td class="result__total"></td>
         <td class="result__total result__total--final">fail</td>
       </tr>`);
   } else {
-    tableContent.push(`<tr>
+    tableRows.push(`<tr>
         <td class="result__number">${index + 1}</td>
         <td colspan="2">
           ${statsBar}
@@ -38,7 +38,7 @@ const renderResults = (result, index) => {
         </tr>`);
 
     if (fastAnswers > 0) {
-      tableContent.push(`<tr>
+      tableRows.push(`<tr>
         <td></td>
         <td class="result__extra">Бонус за скорость:</td>
         <td class="result__extra">${fastAnswers}&nbsp;<span class="stats__result stats__result--fast"></span></td>
@@ -48,7 +48,7 @@ const renderResults = (result, index) => {
     }
 
     if (result.state.lives > 0) {
-      tableContent.push(`<tr>
+      tableRows.push(`<tr>
         <td></td>
         <td class="result__extra">Бонус за жизни:</td>
         <td class="result__extra">${result.state.lives}&nbsp;<span class="stats__result stats__result--alive"></span></td>
@@ -58,7 +58,7 @@ const renderResults = (result, index) => {
     }
 
     if (slowAnswers > 0) {
-      tableContent.push(`<tr>
+      tableRows.push(`<tr>
         <td></td>
         <td class="result__extra">Штраф за медлительность:</td>
         <td class="result__extra">${slowAnswers}&nbsp;<span class="stats__result stats__result--slow"></span></td>
@@ -67,12 +67,12 @@ const renderResults = (result, index) => {
       </tr>`);
     }
 
-    tableContent.push(`<tr>
+    tableRows.push(`<tr>
         <td colspan="5" class="result__total  result__total--final">${result.score}</td>
       </tr>`);
   }
 
-  return `<table class="result__table">${tableContent.join(``)}</table>`;
+  return `<table class="result__table">${tableRows.join(``)}</table>`;
 };
 
 
