@@ -1,6 +1,6 @@
 import getElement from "./getElement";
 import updateWindow from "./updateWindow";
-import introElem from "./intro";
+import greetingElem from "./greeting";
 
 const html = `
     <header class="header">
@@ -124,9 +124,8 @@ const html = `
   `;
 
 const statsElem = getElement(html);
-const btnContinue = statsElem.querySelector(`.back`);
-btnContinue.addEventListener(`click`, () => {
-  updateWindow(introElem);
-});
+const btnBack = statsElem.querySelector(`.back`);
+
+btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
 
 export default statsElem;

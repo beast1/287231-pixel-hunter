@@ -1,6 +1,7 @@
 import getElement from "./getElement";
 import updateWindow from "./updateWindow";
 import gameFirstElem from "./game-1";
+import greetingElem from "./greeting";
 
 const html = `
     <header class="header">
@@ -40,7 +41,10 @@ const html = `
   `;
 
 const rulesElem = getElement(html);
+const btnBack = rulesElem.querySelector(`.back`);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
+
+btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
 btnContinue.addEventListener(`click`, () => updateWindow(gameFirstElem));
 
 export default rulesElem;
