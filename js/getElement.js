@@ -1,9 +1,10 @@
 const getElement = (html) => {
-  const parent = document.querySelector(`main.central`);
-  const template = document.createElement(`template`);
+//  const template = document.createElement(`template`);
+//  template.innerHTML = html;
+//  return template.content.cloneNode(true);
+  const template = document.createElement(`div`);
   template.innerHTML = html;
-  parent.innerHTML = ``;
-  parent.appendChild(template.content.cloneNode(true));
+  return template;
 };
 
 export default getElement;

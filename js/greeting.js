@@ -1,4 +1,6 @@
 import getElement from "./getElement";
+import updateWindow from "./updateWindow";
+import rulesElem from "./rules";
 
 const html = `
     <div class="greeting central--blur">
@@ -26,6 +28,8 @@ const html = `
     </footer>
   `;
 
-const element = getElement(html);
+const greetingElem = getElement(html);
+const btnContinue = greetingElem.querySelector(`.greeting__continue`);
+btnContinue.addEventListener(`click`, () => updateWindow(rulesElem));
 
-export default element;
+export default greetingElem;

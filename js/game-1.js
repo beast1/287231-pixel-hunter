@@ -1,4 +1,6 @@
 import getElement from "./getElement";
+import updateWindow from "./updateWindow";
+import gameSecondElem from "./game-2";
 
 const html = `
     <header class="header">
@@ -68,6 +70,10 @@ const html = `
     </footer>
   `;
 
-const element = getElement(html);
+const gameFirstElem = getElement(html);
+const btnsContinue = gameFirstElem.querySelectorAll(`.game__answer`);
+btnsContinue.forEach((item) => item.addEventListener(`click`, () => {
+  updateWindow(gameSecondElem);
+}));
 
-export default element;
+export default gameFirstElem;
