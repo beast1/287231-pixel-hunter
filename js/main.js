@@ -1,4 +1,4 @@
 import updateWindow from "./updateWindow";
-import greetingElement from "./greeting";
+import introElem from "./intro";
 
-updateWindow(greetingElement);
+updateWindow(introElem);
