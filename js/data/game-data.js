@@ -25,16 +25,21 @@ const createGetPoints = () => {
 };
 const getPoints = createGetPoints();
 
-const timer = (time) => {
-  this.value = time;
-  this.tick  = () => {
-    this.value -= 1;
-    if (this.value === -1) {
-      return false;
-    } else {
-      return this;
+const getTimer = (value) => {
+  if (value < 0) {
+    throw new Error(`time remaining cannot be negative`);
+  }
+
+  if (typeof value !== `number`) {
+    throw new Error(`time is not numeric`);
+  }
+
+  return {
+    value,
+    tick() {
+      return value === 0 ? `time is out` : getTimer(value - 1);
     }
   };
 };
 
-export {getPoints, timer};
+export {getPoints, getTimer};
