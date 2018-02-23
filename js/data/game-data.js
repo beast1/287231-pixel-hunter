@@ -1,4 +1,4 @@
-const createGetResult = () => {
+const createGetPoints = () => {
   const LIVES_PRICE = 50;
   const answerTypePrices = {
     wrong: 0,
@@ -7,8 +7,11 @@ const createGetResult = () => {
     fast: 150
   };
   const answerTypesArr = Object.keys(answerTypePrices);
-  const getResult = (answersArr, livesCount) => {
-    let points = livesPrice * livesCount;
+  const getPoints = (answersArr, livesCount) => {
+    if (livesCount === 0) {
+      return -1;
+    }
+    let points = LIVES_PRICE * livesCount;
     for (let i = 0; i < answersArr.length; i++) {
       for (let j = 0; j < answerTypesArr.length; j++) {
         if (answerTypesArr[j] === answersArr[i]) {
@@ -18,9 +21,20 @@ const createGetResult = () => {
     }
     return points;
   };
-  return getResult;
+  return getPoints;
+};
+const getPoints = createGetPoints();
+
+const timer = (time) => {
+  this.value = time;
+  this.tick  = () => {
+    this.value -= 1;
+    if (this.value === -1) {
+      return false;
+    } else {
+      return this;
+    }
+  };
 };
 
-const getResult = createGetResult();
-
-export {getResult};
+export {getPoints, timer};
