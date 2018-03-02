@@ -1,7 +1,8 @@
 import getElement from "./getElement";
 import updateWindow from "./updateWindow";
-import gameFirstElem from "./game-1";
+import game from "./game-1";
 import greetingElem from "./greeting";
+import {initialState} from "./data/game-data";
 
 const html = `
     <header class="header">
@@ -14,7 +15,7 @@ const html = `
     </header>
     <div class="rules">
       <h1 class="rules__title">Правила</h1>
-      <p class="rules__description">312Угадай 10 раз для каждого изображения фото <img
+      <p class="rules__description">Угадай 10 раз для каждого изображения фото <img
         src="img/photo_icon.png" width="16" height="16"> или рисунок <img
         src="img/paint_icon.png" width="16" height="16" alt="">.<br>
         Фотографиями или рисунками могут быть оба изображения.<br>
@@ -45,6 +46,6 @@ const btnBack = rulesElem.querySelector(`.back`);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
 
 btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-btnContinue.addEventListener(`click`, () => updateWindow(gameFirstElem));
+btnContinue.addEventListener(`click`, () => updateWindow(game(initialState)));
 
 export default rulesElem;

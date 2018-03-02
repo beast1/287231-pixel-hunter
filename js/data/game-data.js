@@ -1,3 +1,42 @@
+const initialState = {
+  level: 0,
+  lives: 3,
+  points: 0
+};
+
+const getLevels = () => {
+  const levelTypes = [{
+    levelType: 0,
+    task: `Угадайте для каждого изображения фото или рисунок?`,
+    options: [{
+      image: `http://placehold.it/468x458`,
+      type: `photo`,
+      answers: {
+        photo: true,
+        paint: false
+      }
+    }, {
+      image: `http://placehold.it/468x458`,
+      type: `paint`,
+      answers: {
+        photo: false,
+        paint: true
+      }
+    }]
+  }];
+  let levels = [];
+  const getRandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+  for (let i = 0; i < 10; i++) {
+    levels.push(levelTypes[getRandomInt(0, 1)]);
+  }
+  return levels;
+};
+
+// в проде будет запрос к БД
+const levels = getLevels();
+
 const createGetPoints = () => {
   const LIVES_PRICE = 50;
   const answerTypePrices = {
@@ -42,4 +81,4 @@ const getTimer = (value) => {
   };
 };
 
-export {getPoints, getTimer};
+export {getPoints, getTimer, initialState, levels};
