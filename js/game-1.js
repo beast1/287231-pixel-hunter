@@ -20,16 +20,16 @@ const game = (state) => {
             <img src="img/logo_small.svg" width="101" height="44">
           </button>
         </div>
-        <h1 class="game__timer">NN</h1>
+        <h1 class="game__timer">lvl:${state.level} pts:${state.points}</h1><!--NN-->
         <div class="game__lives">
-          ${new Array(3 - state.lives).fill(`<img src="img/heart__empty.svg" class="game__heart" alt="Life" width="32" height="32">`.join(``)}
+          ${new Array(3 - state.lives).fill(`<img src="img/heart__empty.svg" class="game__heart" alt="Life" width="32" height="32">`).join(``)}
           ${new Array(state.lives).fill(`<img src="img/heart__full.svg" class="game__heart" alt="Life" width="32" height="32">`).join(``)}
         </div>
       </header>
       <div class="game">
         <p class="game__task">${level.task}</p>
         <form class="game__content">
-          ${new Array(level.options.length).map((item, i) => {
+          ${new Array(level.options.length).fill(``).map((item, i) => {
             const option = level.options[i];
             return `
               <div class="game__option">
@@ -81,14 +81,15 @@ const game = (state) => {
     } else {
       nextState.lives -= 1;
     }
+    return nextState;
   };
-  const btnBack       = gameFirstElem.querySelector(`.back`);
-  const btnTrue  = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--photo` : `game__answer--paint`}`);
-  const btnFalse = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--photo` : `game__answer--paint`}`);
+  const btnBack = gameFirstElem.querySelector(`.back`);
+  const btnTrue = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--photo` : `game__answer--paint`}`);
+  const btnFalse = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--paint` : `game__answer--photo`}`);
 
   btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-  btnTrue.addEventListener(`click`, () => game(updateState(true)));
-  btnFalse.addEventListener(`click`, () => game(updateState(false)));
+  btnTrue.addEventListener(`click`, () => updateWindow(game(updateState(true))));
+  btnFalse.addEventListener(`click`, () => updateWindow(game(updateState(false))));
 //  btnsContinue.forEach((item) => item.addEventListener(`click`, () => updateWindow(gameSecondElem)));
   return gameFirstElem;
 };
