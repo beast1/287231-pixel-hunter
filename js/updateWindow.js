@@ -1,6 +1,8 @@
-const updateWindow = (element) => {
+const updateWindow = (element, clearParent = `clear`) => {
   const parent = document.querySelector(`main.central`);
-  parent.innerHTML = ``;
+  if (clearParent === `clear`) {
+    parent.innerHTML = ``;
+  }
   parent.appendChild(element);
 };
 

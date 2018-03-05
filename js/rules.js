@@ -5,14 +5,6 @@ import greetingElem from "./greeting";
 import {initialState} from "./data/game-data";
 
 const html = `
-    <header class="header">
-      <div class="header__back">
-        <button class="back">
-          <img src="img/arrow_left.svg" width="45" height="45" alt="Back">
-          <img src="img/logo_small.svg" width="101" height="44">
-        </button>
-      </div>
-    </header>
     <div class="rules">
       <h1 class="rules__title">Правила</h1>
       <p class="rules__description">Угадай 10 раз для каждого изображения фото <img
@@ -42,13 +34,8 @@ const html = `
   `;
 
 const rulesElem = getElement(html);
-const btnBack = rulesElem.querySelector(`.back`);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
 
-btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-btnContinue.addEventListener(`click`, () => {
-  const newState = initialState;
-  updateWindow(game(newState));
-});
+btnContinue.addEventListener(`click`, () => updateWindow(game(initialState)));
 
 export default rulesElem;
