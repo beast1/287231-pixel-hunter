@@ -33,6 +33,7 @@ const levels = getLevels();
 const createGetPoints = () => {
   const LIVES_PRICE = 50;
   const answerTypePrices = {
+    unknown: 0,
     wrong: 0,
     slow: 50,
     correct: 100,
@@ -40,7 +41,7 @@ const createGetPoints = () => {
   };
   const answerTypesArr = Object.keys(answerTypePrices);
   const getPoints = (answersArr, livesCount) => {
-    if (livesCount === 0) {
+    if (livesCount === -1) {
       return -1;
     }
     let points = LIVES_PRICE * livesCount;

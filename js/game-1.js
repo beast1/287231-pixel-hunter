@@ -3,7 +3,7 @@ import updateWindow from "./updateWindow";
 import gameSecondElem from "./game-2";
 import greetingElem from "./greeting";
 import {levels} from "./data/game-data";
-import statsElem from './stats';
+import stats from './stats';
 
 const game = (state) => {
   const level = levels[state.level];
@@ -60,7 +60,7 @@ const game = (state) => {
     `;
   const gameFirstElem = getElement(html);
   const updateState = (isTrueAnswer) => {
-    const nextState = state;
+    const nextState = Object.assign({}, state);
     nextState.level += 1;
     if (isTrueAnswer) {
       nextState.history[nextState.level - 1] = `correct`;
@@ -86,13 +86,19 @@ const game = (state) => {
             correctAnswersCount += 1;
           }
         });
+        let updatedState;
         if (correctAnswersCount === fields.length) {
-          updateWindow(game(updateState(true)));
+          updatedState = updateState(true);
+        } else {
+          updatedState = updateState(false);
+        }
+        if (state.level === 9) {
+          updateWindow(stats(updatedState));
         } else {
           if (state.lives === 0) {
-            updateWindow(statsElem);
+            updateWindow(stats(updatedState));
           } else {
-            updateWindow(game(updateState(false)));
+            updateWindow(game(updatedState));
           }
         }
       }

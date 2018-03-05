@@ -46,6 +46,9 @@ const btnBack = rulesElem.querySelector(`.back`);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
 
 btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-btnContinue.addEventListener(`click`, () => updateWindow(game(initialState)));
+btnContinue.addEventListener(`click`, () => {
+  const newState = initialState;
+  updateWindow(game(newState));
+});
 
 export default rulesElem;
