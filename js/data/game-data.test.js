@@ -6,7 +6,7 @@ const {equal, throws} = assert;
 const AnswerTypes = {
   WRONG: `wrong`,
   SLOW: `slow`,
-  CORRECT: `right`,
+  CORRECT: `correct`,
   FAST: `fast`
 };
 

@@ -1,7 +1,8 @@
 const initialState = {
   level: 0,
   lives: 3,
-  points: 0
+  points: 0,
+  history: new Array(10).fill(`unknown`)
 };
 
 const getLevels = () => {
@@ -42,7 +43,7 @@ const createGetPoints = () => {
   const answerTypePrices = {
     wrong: 0,
     slow: 50,
-    right: 100,
+    correct: 100,
     fast: 150
   };
   const answerTypesArr = Object.keys(answerTypePrices);

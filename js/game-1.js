@@ -2,13 +2,7 @@ import getElement from "./getElement";
 import updateWindow from "./updateWindow";
 import gameSecondElem from "./game-2";
 import greetingElem from "./greeting";
-// притянуть массив уровней
 import {levels} from "./data/game-data";
-// подставить состояние
-// подставить уровень
-// нзабиндить ответы
-  // обновить состояние
-  // вызвать себя же с новым состоянием
 
 const game = (state) => {
   const level = levels[state.level];
@@ -48,16 +42,7 @@ const game = (state) => {
         </form>
         <div class="stats">
           <ul class="stats">
-            <li class="stats__result stats__result--wrong"></li>
-            <li class="stats__result stats__result--slow"></li>
-            <li class="stats__result stats__result--fast"></li>
-            <li class="stats__result stats__result--correct"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--unknown"></li>
-            <li class="stats__result stats__result--unknown"></li>
+            ${state.history.map((answer) => `<li class="stats__result stats__result--${answer}"></li>`).join(``)}
           </ul>
         </div>
       </div>
@@ -77,8 +62,10 @@ const game = (state) => {
     const nextState = state;
     nextState.level += 1;
     if (isTrueAnswer) {
+      nextState.history[nextState.level - 1] = `correct`;
       nextState.points += 100;
     } else {
+      nextState.history[nextState.level - 1] = `wrong`;
       nextState.lives -= 1;
     }
     return nextState;
@@ -88,9 +75,8 @@ const game = (state) => {
   const btnFalse = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--paint` : `game__answer--photo`}`);
 
   btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-  btnTrue.addEventListener(`click`, () => updateWindow(game(updateState(true))));
-  btnFalse.addEventListener(`click`, () => updateWindow(game(updateState(false))));
-//  btnsContinue.forEach((item) => item.addEventListener(`click`, () => updateWindow(gameSecondElem)));
+  btnTrue.addEventListener(`mousedown`, () => updateWindow(game(updateState(true))));
+  btnFalse.addEventListener(`mousedown`, () => updateWindow(game(updateState(false))));
   return gameFirstElem;
 };
 
