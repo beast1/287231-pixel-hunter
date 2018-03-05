@@ -11,18 +11,10 @@ const getLevels = () => {
     task: `Угадайте для каждого изображения фото или рисунок?`,
     options: [{
       image: `http://placehold.it/468x458`,
-      type: `photo`,
-      answers: {
-        photo: true,
-        paint: false
-      }
+      type: `photo`
     }, {
       image: `http://placehold.it/468x458`,
-      type: `paint`,
-      answers: {
-        photo: false,
-        paint: true
-      }
+      type: `paint`
     }]
   }];
   let levels = [];

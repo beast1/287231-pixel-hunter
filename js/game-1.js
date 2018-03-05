@@ -3,6 +3,7 @@ import updateWindow from "./updateWindow";
 import gameSecondElem from "./game-2";
 import greetingElem from "./greeting";
 import {levels} from "./data/game-data";
+import statsElem from './stats';
 
 const game = (state) => {
   const level = levels[state.level];
@@ -28,11 +29,11 @@ const game = (state) => {
             return `
               <div class="game__option">
                 <img src="${option.image}" alt="Option ${i}" width="468" height="458">
-                <label class="game__answer game__answer--photo">
+                <label class="game__answer game__answer--photo" data-option="${i}">
                   <input name="question${i}" type="radio" value="photo">
                   <span>Фото</span>
                 </label>
-                <label class="game__answer game__answer--paint">
+                <label class="game__answer game__answer--paint" data-option="${i}">
                   <input name="question${i}" type="radio" value="paint">
                   <span>Рисунок</span>
                 </label>
@@ -71,12 +72,32 @@ const game = (state) => {
     return nextState;
   };
   const btnBack = gameFirstElem.querySelector(`.back`);
-  const btnTrue = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--photo` : `game__answer--paint`}`);
-  const btnFalse = gameFirstElem.querySelector(`.game__answer.${level.options[0].answers.photo ? `game__answer--paint` : `game__answer--photo`}`);
+  const form = gameFirstElem.querySelector(`.game__content`);
+  const fields = form.querySelectorAll(`.game__option`);
 
   btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
-  btnTrue.addEventListener(`mousedown`, () => updateWindow(game(updateState(true))));
-  btnFalse.addEventListener(`mousedown`, () => updateWindow(game(updateState(false))));
+  form.addEventListener(`change`, () => {
+    if (level.levelType === 0) {
+      const checkedInputs = form.querySelectorAll(`input[type="radio"]:checked`);
+      if (checkedInputs.length === fields.length) {
+        let correctAnswersCount = 0;
+        checkedInputs.forEach((checkedInput, i) => {
+          if (checkedInput.value === level.options[i].type) {
+            correctAnswersCount += 1;
+          }
+        });
+        if (correctAnswersCount === fields.length) {
+          updateWindow(game(updateState(true)));
+        } else {
+          if (state.lives === 0) {
+            updateWindow(statsElem);
+          } else {
+            updateWindow(game(updateState(false)));
+          }
+        }
+      }
+    }
+  });
   return gameFirstElem;
 };
 
