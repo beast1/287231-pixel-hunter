@@ -48,7 +48,7 @@ const game = (state) => {
       ${getFooterTemplate()}
     `;
   const gameFirstElem = getElement(html);
-  const updateState = (isTrueAnswer) => {
+  const nextLevel = (isTrueAnswer) => {
     const nextState = Object.assign({}, state);
     nextState.level += 1;
     if (isTrueAnswer) {
@@ -58,23 +58,10 @@ const game = (state) => {
       nextState.history[nextState.level - 1] = `wrong`;
       nextState.lives -= 1;
     }
-    return nextState;
-  };
-  const choosePath = (condition) => {
-    let updatedState;
-    if (condition) {
-      updatedState = updateState(true);
+    if (state.level === 9 || state.lives === 0) {
+      updateWindow(stats(nextState));
     } else {
-      updatedState = updateState(false);
-    }
-    if (state.level === 9) {
-      updateWindow(stats(updatedState));
-    } else {
-      if (state.lives === 0) {
-        updateWindow(stats(updatedState));
-      } else {
-        updateWindow(game(updatedState));
-      }
+      updateWindow(game(nextState));
     }
   };
   const btnBack = gameFirstElem.querySelector(`.back`);
@@ -84,7 +71,7 @@ const game = (state) => {
   btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
   if (level.levelType === `triple`) {
     form.addEventListener(`click`, (e) => {
-      choosePath(level.options[e.target.dataset.option].type === `paint`);
+      nextLevel(level.options[e.target.dataset.option].type === `paint`);
     });
   } else {
     form.addEventListener(`change`, () => {
@@ -96,7 +83,7 @@ const game = (state) => {
             correctAnswersCount += 1;
           }
         });
-        choosePath(correctAnswersCount === fields.length);
+        nextLevel(correctAnswersCount === fields.length);
       }
     });
   }
