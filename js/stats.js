@@ -1,4 +1,4 @@
-import getElement from "./getElement";
+import {getElement} from "./utils";
 import {getPoints} from "./data/game-data";
 import updateWindow from "./updateWindow";
 import greetingElem from "./greeting";

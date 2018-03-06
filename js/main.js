@@ -1,4 +1,4 @@
-import updateWindow from "./updateWindow";
-import introElem from "./intro";
+import {changeView} from "./utils";
+import intro from "./intro/intro";
 
-updateWindow(introElem);
+changeView(intro());

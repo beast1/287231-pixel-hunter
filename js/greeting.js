@@ -1,4 +1,4 @@
-import getElement from "./getElement";
+import {getElement} from "./utils";
 import updateWindow from "./updateWindow";
 import rulesElem from "./rules";
 
