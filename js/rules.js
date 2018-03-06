@@ -1,5 +1,6 @@
 import getElement from "./getElement";
 import updateWindow from "./updateWindow";
+import greetingElem from "./greeting";
 import game from "./game";
 import {initialState} from "./data/game-data";
 
@@ -28,8 +29,10 @@ const html = `
   `;
 
 const rulesElem = getElement(html);
+const btnBack = rulesElem.querySelector(`.back`);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
 
+btnBack.addEventListener(`click`, () => updateWindow(greetingElem));
 btnContinue.addEventListener(`click`, () => updateWindow(game(initialState())));
 
 export default rulesElem;
