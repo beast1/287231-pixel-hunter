@@ -3,10 +3,12 @@ import updateWindow from "./updateWindow";
 import game from "./game";
 import {initialState} from "./data/game-data";
 
+import getHeaderTemplate from "./header";
 import getFooterTemplate from "./footer";
 
 const html = `
     <div class="rules">
+      ${getHeaderTemplate()}
       <h1 class="rules__title">Правила</h1>
       <p class="rules__description">Угадай 10 раз для каждого изображения фото <img
         src="img/photo_icon.png" width="16" height="16"> или рисунок <img
@@ -28,6 +30,6 @@ const html = `
 const rulesElem = getElement(html);
 const btnContinue = rulesElem.querySelector(`.rules__button.continue`);
 
-btnContinue.addEventListener(`click`, () => updateWindow(game(initialState)));
+btnContinue.addEventListener(`click`, () => updateWindow(game(initialState())));
 
 export default rulesElem;

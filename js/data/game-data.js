@@ -1,8 +1,10 @@
-const initialState = {
-  level: 0,
-  lives: 3,
-  points: 0,
-  history: new Array(10).fill(`unknown`)
+const initialState = () => {
+  return {
+    level: 0,
+    lives: 3,
+    points: 0,
+    history: new Array(10).fill(`unknown`)
+  };
 };
 
 const getLevels = () => {
