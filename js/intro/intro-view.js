@@ -17,9 +17,7 @@ export default class IntroView extends AbstractView {
 
   bind() {
     const btnContinue = this.element.querySelector(`.intro__asterisk`);
-    btnContinue.addEventListener(`click`, () => {
-      this.onContinue();
-    });
+    btnContinue.addEventListener(`click`, () => this.onContinue());
   }
 
   onContinue() {

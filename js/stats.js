@@ -1,7 +1,7 @@
 import {getElement} from "./utils";
 import {getPoints} from "./data/game-data";
 import updateWindow from "./updateWindow";
-import greetingElem from "./greeting";
+import greetingElem from "./greeting/greeting";
 
 import getHeaderTemplate from "./header";
 import getFooterTemplate from "./footer";

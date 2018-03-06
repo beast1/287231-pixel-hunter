@@ -1,6 +1,6 @@
 import {getElement} from "./utils";
 import updateWindow from "./updateWindow";
-import greetingElem from "./greeting";
+import greetingElem from "./greeting/greeting";
 import {levels} from "./data/game-data";
 import stats from './stats';
 
