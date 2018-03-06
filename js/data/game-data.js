@@ -7,14 +7,58 @@ const initialState = {
 
 const getLevels = () => {
   const levelTypes = [{
-    levelType: 0,
+    levelType: `double`,
     task: `Угадайте для каждого изображения фото или рисунок?`,
     options: [{
-      image: `http://placehold.it/468x458`,
+      image: {
+        src: `http://placehold.it/468x458`,
+        width: 468,
+        height: 458
+      },
       type: `photo`
     }, {
-      image: `http://placehold.it/468x458`,
+      image: {
+        src: `http://placehold.it/468x458`,
+        width: 468,
+        height: 458
+      },
       type: `paint`
+    }]
+  }, {
+    levelType: `triple`,
+    task: `Найдите рисунок среди изображений`,
+    options: [{
+      image: {
+        src: `http://placehold.it/304x455`,
+        width: 304,
+        height: 455
+      },
+      type: `photo`
+    }, {
+      image: {
+        src: `http://placehold.it/304x455`,
+        width: 304,
+        height: 455
+      },
+      type: `paint`
+    }, {
+      image: {
+        src: `http://placehold.it/304x455`,
+        width: 304,
+        height: 455
+      },
+      type: `photo`
+    }]
+  }, {
+    levelType: `wide`,
+    task: `Угадай, фото или рисунок?`,
+    options: [{
+      image: {
+        src: `http://placehold.it/705x455`,
+        width: 705,
+        height: 455
+      },
+      type: `photo`
     }]
   }];
   let levels = [];
@@ -22,8 +66,9 @@ const getLevels = () => {
     return Math.floor(Math.random() * (max - min)) + min;
   };
   for (let i = 0; i < 10; i++) {
-    levels.push(levelTypes[getRandomInt(0, 1)]);
+    levels.push(levelTypes[getRandomInt(0, 3)]);
   }
+  console.log(levels);
   return levels;
 };
 
