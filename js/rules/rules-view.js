@@ -1,6 +1,6 @@
 import AbstractView from "../AbstractView";
 import {initialState} from "../data/game-data";
-import game from "../game";
+import game from "../game/game";
 
 import getHeaderTemplate from "../header";
 import getFooterTemplate from "../footer";

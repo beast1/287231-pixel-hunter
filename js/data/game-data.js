@@ -1,3 +1,9 @@
+export const LevelTypes = {
+  DOUBLE: `double`,
+  TRIPLE: `triple`,
+  WIDE: `wide`
+};
+
 const initialState = () => {
   return {
     level: 0,
@@ -8,8 +14,8 @@ const initialState = () => {
 };
 
 const getLevels = () => {
-  const levelTypes = [{
-    levelType: `double`,
+  const levelTemplates = [{
+    levelType: LevelTypes.DOUBLE,
     task: `Угадайте для каждого изображения фото или рисунок?`,
     options: [{
       image: {
@@ -27,7 +33,7 @@ const getLevels = () => {
       type: `paint`
     }]
   }, {
-    levelType: `triple`,
+    levelType: LevelTypes.TRIPLE,
     task: `Найдите рисунок среди изображений`,
     options: [{
       image: {
@@ -52,7 +58,7 @@ const getLevels = () => {
       type: `photo`
     }]
   }, {
-    levelType: `wide`,
+    levelType: LevelTypes.WIDE,
     task: `Угадай, фото или рисунок?`,
     options: [{
       image: {
@@ -68,7 +74,7 @@ const getLevels = () => {
     return Math.floor(Math.random() * (max - min)) + min;
   };
   for (let i = 0; i < 10; i++) {
-    levels.push(levelTypes[getRandomInt(0, 3)]);
+    levels.push(levelTemplates[getRandomInt(0, 3)]);
   }
   console.log(levels);
   return levels;
