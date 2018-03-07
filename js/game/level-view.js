@@ -64,29 +64,13 @@ export default class LevelView extends AbstractView {
       if (e.target.classList.contains(`game__option`) && this.level.levelType === LevelTypes.TRIPLE) {
         this.onAnswer(this.level.options[e.target.dataset.option].type === `paint`);
       } else {
-        const checkedInputs = form.querySelectorAll(`input[type="radio"]:checked`);
+        const checkedInputs = Array.from(form.querySelectorAll(`input[type="radio"]:checked`));
         if (checkedInputs.length === fields.length) {
-          let correctAnswersCount = 0;
-//          рефактор
-//          checkedInputs.every
-          checkedInputs.forEach((checkedInput, i) => {
-            if (checkedInput.value === this.level.options[i].type) {
-              correctAnswersCount += 1;
-            }
-          });
-          this.onAnswer(correctAnswersCount === fields.length);
+          this.onAnswer(checkedInputs.every((checkedInput, i) => checkedInput.value === this.level.options[i].type));
         }
       }
     });
-//    удалить
-//    if (this.level.levelType === `triple`) {
-//      form.addEventListener(`click`, (e) => this.onTripleAnswer(e, this.level, this.state));
-//    } else {
-//      form.addEventListener(`change`, () => this.onRadioAnswer(form, fields, this.level, this.state));
-//    }
   }
   onBack() {}
   onAnswer() {}
-  onTripleAnswer() {}
-  onRadioAnswer() {}
 }
