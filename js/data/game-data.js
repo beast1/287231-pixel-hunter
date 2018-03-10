@@ -4,11 +4,19 @@ export const LevelTypes = {
   WIDE: `wide`
 };
 
-const initialState = () => {
+export const InitialState = {
+  LEVEL: 0,
+  LIVES: 3,
+  POINTS: 0,
+  TIME: 30
+};
+
+export const initialState = () => {
   return {
-    level: 0,
-    lives: 3,
-    points: 0,
+    level: InitialState.LEVEL,
+    lives: InitialState.LIVES,
+    points: InitialState.POINTS,
+    time: InitialState.TIME,
     history: new Array(10).fill(`unknown`)
   };
 };
@@ -19,14 +27,14 @@ const getLevels = () => {
     task: `Угадайте для каждого изображения фото или рисунок?`,
     options: [{
       image: {
-        src: `http://placehold.it/468x458`,
+        src: `http://www.kartinki.me/images/201312/kartinki.me_16611.jpg`,
         width: 468,
         height: 458
       },
       type: `photo`
     }, {
       image: {
-        src: `http://placehold.it/468x458`,
+        src: `http://www.fresher.ru/manager_content/images/fotorealistichnye-kartiny-italyanca-mikele-del-kampo/big/18.jpg`,
         width: 468,
         height: 458
       },
@@ -37,21 +45,21 @@ const getLevels = () => {
     task: `Найдите рисунок среди изображений`,
     options: [{
       image: {
-        src: `http://placehold.it/304x455`,
+        src: `http://i.imgur.com/1KegWPz.jpg`,
         width: 304,
         height: 455
       },
       type: `photo`
     }, {
       image: {
-        src: `http://placehold.it/304x455`,
+        src: `https://k42.kn3.net/D2F0370D6.jpg`,
         width: 304,
         height: 455
       },
       type: `paint`
     }, {
       image: {
-        src: `http://placehold.it/304x455`,
+        src: `https://i.imgur.com/DiHM5Zb.jpg`,
         width: 304,
         height: 455
       },
@@ -62,7 +70,7 @@ const getLevels = () => {
     task: `Угадай, фото или рисунок?`,
     options: [{
       image: {
-        src: `http://placehold.it/705x455`,
+        src: `http://www.fresher.ru/manager_content/images/fotorealistichnye-kartiny-italyanca-mikele-del-kampo/big/18.jpg`,
         width: 705,
         height: 455
       },
@@ -81,7 +89,7 @@ const getLevels = () => {
 };
 
 // в проде будет запрос к БД
-const levels = getLevels();
+export const levels = getLevels();
 
 const createGetPoints = () => {
   const LIVES_PRICE = 50;
@@ -109,23 +117,8 @@ const createGetPoints = () => {
   };
   return getPoints;
 };
-const getPoints = createGetPoints();
+export const getPoints = createGetPoints();
 
-const getTimer = (value) => {
-  if (value < 0) {
-    throw new Error(`time remaining cannot be negative`);
-  }
+export const resize = () => {
 
-  if (typeof value !== `number`) {
-    throw new Error(`time is not numeric`);
-  }
-
-  return {
-    value,
-    tick() {
-      return value === 0 ? `time is out` : getTimer(value - 1);
-    }
-  };
 };
-
-export {getPoints, getTimer, initialState, levels};

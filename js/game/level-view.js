@@ -59,6 +59,7 @@ export default class LevelView extends AbstractView {
     const btnBack = this.element.querySelector(`.back`);
     const form = this.element.querySelector(`.game__content`);
     const fields = form.querySelectorAll(`.game__option`);
+    this.timerElem = this.element.querySelector(`.game__timer`);
     btnBack.addEventListener(`click`, this.onBack);
     form.addEventListener(`click`, (e) => {
       if (e.target.classList.contains(`game__option`) && this.level.levelType === LevelTypes.TRIPLE) {
@@ -73,4 +74,7 @@ export default class LevelView extends AbstractView {
   }
   onBack() {}
   onAnswer() {}
+  updTime(time) {
+    this.timerElem.textContent = time;
+  }
 }
